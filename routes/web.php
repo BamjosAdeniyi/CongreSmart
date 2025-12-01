@@ -29,29 +29,43 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard/pastor', function () {
         return view('dashboards.pastor');
-    })->name('dashboard.pastor');
+    })
+    ->middleware(['auth', 'role:pastor'])
+    ->name('dashboard.pastor');
 
     Route::get('/dashboard/clerk', function () {
         return view('dashboards.clerk');
-    })->name('dashboard.clerk');
+    })
+    ->middleware(['auth', 'role:clerk'])
+    ->name('dashboard.clerk');
 
     Route::get('/dashboard/superintendent', function () {
         return view('dashboards.superintendent');
-    })->name('dashboard.superintendent');
+    })
+    ->middleware(['auth', 'role:superintendent'])
+    ->name('dashboard.superintendent');
 
     Route::get('/dashboard/coordinator', function () {
         return view('dashboards.coordinator');
-    })->name('dashboard.coordinator');
+    })
+    ->middleware(['auth', 'role:coordinator'])
+    ->name('dashboard.coordinator');
 
     Route::get('/dashboard/financial', function () {
         return view('dashboards.financial');
-    })->name('dashboard.financial');
+    })
+    ->middleware(['auth', 'role:fianancial'])
+    ->name('dashboard.financial');
 
     Route::get('/dashboard/welfare', function () {
         return view('dashboards.welfare');
-    })->name('dashboard.welfare');
+    })
+    ->middleware(['auth', 'role:welfare'])
+    ->name('dashboard.welfare');
 
     Route::get('/dashboard/ict', function () {
         return view('dashboards.ict');
-    })->name('dashboard.ict');
+    })
+    ->middleware(['auth', 'role:ict'])
+    ->name('dashboard.ict');
 });
