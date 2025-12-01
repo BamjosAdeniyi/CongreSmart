@@ -5,7 +5,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://mysql.com)
 
 > A comprehensive church management system designed specifically for Seventh-day Adventist churches, enabling efficient management of members, attendance, finances, and disciplinary records.
-
+ 
 ---
 
 ## 📋 Table of Contents
