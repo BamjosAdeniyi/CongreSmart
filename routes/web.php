@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,4 +69,9 @@ Route::middleware(['auth'])->group(function () {
     })
     ->middleware(['auth', 'role:ict'])
     ->name('dashboard.ict');
+});
+
+Route::middleware(['auth', 'role:pastor'])->group(function () {
+    Route::get('/dashboard/pastor', [DashboardController::class, 'pastor'])
+         ->name('dashboard.pastor');
 });

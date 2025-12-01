@@ -1,75 +1,42 @@
-<div class="w-64 h-screen bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] flex flex-col">
+<aside id="sidebar"
+    class="fixed top-0 left-0 h-full w-[260px] bg-[var(--sidebar)]
+           border-r border-[var(--sidebar-border)]
+           p-4 z-50 transition-transform duration-300
+           -translate-x-full lg:translate-x-0">
 
-    {{-- Logo + App Name --}}
-    <div class="flex items-center gap-3 px-6 py-6 border-b border-[var(--sidebar-border)]">
-        <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="h-10 w-10 object-contain">
-
+    {{-- Logo --}}
+    <div class="flex items-center space-x-3 mb-8 px-2">
+        <img src="{{ asset('images/sda-logo.png') }}" class="h-10 w-10" />
         <div>
-            <h1 class="text-lg font-semibold text-[var(--sidebar-primary)] leading-tight">
-                CongreSmart
-            </h1>
-            <p class="text-xs text-[var(--muted-foreground)]">
-                Church Management
-            </p>
+            <h1 class="font-semibold text-lg">CongreSmart</h1>
+            <p class="text-xs text-[var(--muted-foreground)]">Church Management</p>
         </div>
     </div>
 
+    {{-- Navigation --}}
+    <nav class="space-y-1">
+        <?php
+            $links = [
+                ['Dashboard', 'dashboard', 'bi bi-speedometer2'],
+                // ['Members', 'members.index', 'bi bi-people'],
+                // ['Sabbath School', 'school.index', 'bi bi-book'],
+                // ['Finance', 'finance.index', 'bi bi-cash-stack'],
+                // ['Reports', 'reports.index', 'bi bi-file-earmark-text'],
+                // ['Notifications', 'notifications.index', 'bi bi-bell'],
+                // ['Settings', 'settings.index', 'bi bi-gear'],
+            ];
+        ?>
 
-    {{-- Menu Links --}}
-    <nav class="flex-1 px-4 py-4 space-y-1">
-
-        {{-- Helper: Determine Active --}}
-        @php
-            function isActiveRoute($route)
-            {
-                return request()->routeIs($route) ? 'bg-[var(--sidebar-accent)] text-[var(--sidebar-primary)]' : 'text-[var(--sidebar-foreground)]';
-            }
-        @endphp
-
-        <a href="{{ route('dashboard') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('dashboard') }}">
-            📊 <span>Dashboard</span>
-        </a>
-
-        <a href="{{ route('members.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('members.*') }}">
-            👥 <span>Members</span>
-        </a>
-
-        <a href="{{ route('classes.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('classes.*') }}">
-            🏫 <span>Sabbath School</span>
-        </a>
-
-        <a href="{{ route('attendance.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('attendance.*') }}">
-            📅 <span>Attendance</span>
-        </a>
-
-        <a href="{{ route('finance.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('finance.*') }}">
-            💰 <span>Finance</span>
-        </a>
-
-        <a href="{{ route('reports.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('reports.*') }}">
-            📄 <span>Reports</span>
-        </a>
-
-        @if(auth()->user()->role === 'ict')
-        <a href="{{ route('admin.users.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-md transition
-                  hover:bg-[var(--sidebar-accent)] {{ isActiveRoute('admin.users.*') }}">
-            🛠 <span>User Management</span>
-        </a>
-        @endif
-
+        @foreach ($links as [$label, $routeName, $icon])
+            <a href="{{ route($routeName) }}"
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm
+                       hover:bg-[var(--sidebar-accent)]
+                       hover:text-[var(--sidebar-accent-foreground)]
+                       {{ request()->routeIs($routeName) ? 'bg-[var(--sidebar-accent)] font-semibold' : '' }}">
+                <i class="{{ $icon }} text-lg"></i>
+                {{ $label }}
+            </a>
+        @endforeach
     </nav>
 
-</div>
+</aside>
