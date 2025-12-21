@@ -1,38 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
-
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{{ $title ?? 'CongreSmart' }}</title>
-
+    <title>{{ $title ?? 'CongreSmart' }} - {{ config('app.name', 'Church Management') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<body class="bg-gray-50 text-gray-900 h-full">
+    <div class="flex h-screen bg-gray-50">
+        {{-- Sidebar --}}
+        <x-sidebar />
 
-<body class="bg-[var(--background)] text-[var(--foreground)]">
+        {{-- Main Content Area --}}
+        <div class="flex-1 flex flex-col overflow-hidden md:ml-64">
+            {{-- Navbar --}}
+            <x-navbar :title="$title ?? ''" />
 
-    {{-- Mobile Sidebar Overlay --}}
-    <div id="mobile-overlay"
-        class="fixed inset-0 bg-black/40 z-40 hidden"
-        onclick="toggleSidebar()">
+            {{-- Page Content --}}
+            <main class="flex-1 overflow-y-auto p-4 md:p-6">
+                {{ $slot }}
+            </main>
+        </div>
     </div>
-
-    {{-- Sidebar --}}
-    <x-sidebar />
-
-    {{-- Main Content --}}
-    <div class="lg:ml-[260px] min-h-screen transition-all">
-        
-        {{-- Topbar --}}
-        <x-topbar :title="$title ?? ''" />
-
-        {{-- Page Content --}}
-        <main class="p-6">
-            @yield('content')
-        </main>
-    </div>
-
 </body>
-
 </html>
