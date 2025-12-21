@@ -86,26 +86,14 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Sabbath School Routes
-    Route::prefix('sabbath-school')->name('sabbath-school.')->group(function () {
-        Route::get('/', function () {
-            return view('sabbath-school.index');
-        })->name('index');
-        
-        Route::get('/classes', function () {
-            return view('sabbath-school.classes');
-        })->name('classes');
-        
-        Route::get('/attendance', function () {
-            return view('sabbath-school.attendance');
-        })->name('attendance');
-        
-        Route::get('/assign', function () {
-            return view('sabbath-school.assign');
-        })->name('assign');
-        
-        Route::get('/reports', function () {
-            return view('sabbath-school.reports');
-        })->name('reports');
+    Route::resource('sabbath-school', App\Http\Controllers\SabbathSchoolController::class);
+
+    Route::prefix('sabbath-school')->name('sabbath-school.')->controller(App\Http\Controllers\SabbathSchoolController::class)->group(function () {
+        Route::get('/{class}/attendance', 'attendance')->name('attendance');
+        Route::post('/{class}/attendance', 'storeAttendance')->name('attendance.store');
+        Route::get('/{class}/assign-members', 'assignMembers')->name('assign-members');
+        Route::post('/{class}/assign-members', 'updateMemberAssignments')->name('assign-members.update');
+        Route::get('/reports', 'reports')->name('reports');
     });
 
     // Finance Routes
