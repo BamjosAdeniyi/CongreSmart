@@ -12,13 +12,13 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            ['name'=>'ICT Administrator','email'=>'ict@example.com','role'=>'ict'],
-            ['name'=>'Church Clerk','email'=>'clerk@example.com','role'=>'clerk'],
-            ['name'=>'Sabbath Superintendent','email'=>'superintendent@example.com','role'=>'superintendent'],
-            ['name'=>'Financial Secretary','email'=>'financial@example.com','role'=>'financial'],
-            ['name'=>'Coordinator One','email'=>'coordinator1@example.com','role'=>'coordinator'],
-            ['name'=>'Pastor','email'=>'pastor@example.com','role'=>'pastor'],
-            ['name'=>'Welfare Lead','email'=>'welfare@example.com','role'=>'welfare'],
+            ['name'=>'ICT Administrator','email'=>'ict@church.com','role'=>'ict','password'=>'ict123'],
+            ['name'=>'Church Clerk','email'=>'clerk@church.com','role'=>'clerk','password'=>'clerk123'],
+            ['name'=>'Sabbath Superintendent','email'=>'superintendent@church.com','role'=>'superintendent','password'=>'super123'],
+            ['name'=>'Financial Secretary','email'=>'financial@church.com','role'=>'financial','password'=>'finance123'],
+            ['name'=>'Coordinator One','email'=>'coordinator1@church.com','role'=>'coordinator', 'password'=>'coord123'],
+            ['name'=>'Pastor','email'=>'pastor@church.com','role'=>'pastor', 'password'=>'pastor123'],
+            ['name'=>'Welfare Lead','email'=>'welfare@church.com','role'=>'welfare', 'password'=>'welfare123'],
         ];
 
         foreach ($users as $u) {
@@ -26,7 +26,7 @@ class UsersSeeder extends Seeder
                 'id' => (string) Str::uuid(),
                 'name' => $u['name'],
                 'email' => $u['email'],
-                'password' => Hash::make('Password123!'), // change in production
+                'password' => Hash::make($u['password']), // change in production
                 'role' => $u['role'],
                 'active' => true,
             ]);

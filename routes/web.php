@@ -109,36 +109,27 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Reports Routes
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', function () {
-            return view('reports.index');
-        })->name('index');
-        
-        Route::get('/members', function () {
-            return view('reports.members');
-        })->name('members');
-        
-        Route::get('/attendance', function () {
-            return view('reports.attendance');
-        })->name('attendance');
-        
-        Route::get('/financial', function () {
-            return view('reports.financial');
-        })->name('financial');
+    Route::prefix('reports')->name('reports.')->controller(App\Http\Controllers\ReportsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/members', 'members')->name('members');
+        Route::get('/attendance', 'attendance')->name('attendance');
+        Route::get('/financial', 'financial')->name('financial');
     });
 
     // Notifications Routes
-    Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', function () {
-            return view('notifications.index');
-        })->name('index');
+    Route::prefix('notifications')->name('notifications.')->controller(App\Http\Controllers\NotificationsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/{id}/read', 'markAsRead')->name('mark-read');
+        Route::post('/mark-all-read', 'markAllAsRead')->name('mark-all-read');
     });
 
     // Settings Routes (ICT and Pastor only)
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', function () {
-            return view('settings.index');
-        })->name('index');
+    Route::prefix('settings')->name('settings.')->controller(App\Http\Controllers\SettingsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/profile', 'updateProfile')->name('profile.update');
+        Route::post('/password', 'updatePassword')->name('password.update');
+        Route::post('/preferences', 'updatePreferences')->name('preferences.update');
+        Route::get('/system-info', 'systemInfo')->name('system-info');
     });
 
     // Administration Routes (ICT only)
