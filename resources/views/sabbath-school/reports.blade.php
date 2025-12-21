@@ -88,7 +88,7 @@
                             <thead>
                                 <tr class="border-b border-gray-200">
                                     <th class="text-left py-3 px-4 font-medium text-gray-900">Class Name</th>
-                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Teacher</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Coordinator</th>
                                     <th class="text-center py-3 px-4 font-medium text-gray-900">Sessions</th>
                                     <th class="text-center py-3 px-4 font-medium text-gray-900">Avg Attendance</th>
                                     <th class="text-center py-3 px-4 font-medium text-gray-900">Total Attendance</th>
@@ -107,7 +107,7 @@
                                         </td>
                                         <td class="py-4 px-4">
                                             <div class="text-sm text-gray-900">
-                                                {{ $report['class']->teacher?->first_name }} {{ $report['class']->teacher?->last_name }}
+                                                {{ $report['class']->coordinator?->first_name }} {{ $report['class']->coordinator?->last_name }}
                                             </div>
                                         </td>
                                         <td class="py-4 px-4 text-center">

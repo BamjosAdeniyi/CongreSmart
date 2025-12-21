@@ -127,7 +127,7 @@
                                         </span>
                                     </td>
                                     <td class="py-4 px-4 text-gray-600">
-                                        {{ $member->sabbathSchoolClass?->name ?? 'Not Assigned' }}
+                                        {{ $member->sabbathClass?->name ?? 'Not Assigned' }}
                                     </td>
                                     <td class="py-4 px-4 text-gray-600">{{ $member->phone ?? 'N/A' }}</td>
                                 </tr>

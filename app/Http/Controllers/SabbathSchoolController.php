@@ -14,7 +14,7 @@ class SabbathSchoolController extends Controller
 {
     public function index()
     {
-        $classes = SabbathSchoolClass::with(['teacher', 'members'])
+        $classes = SabbathSchoolClass::with(['coordinator', 'members'])
             ->withCount('members')
             ->orderBy('name')
             ->get();
@@ -27,8 +27,8 @@ class SabbathSchoolController extends Controller
 
     public function create()
     {
-        $teachers = Member::where('role', 'teacher')
-            ->orWhere('role', 'superintendent')
+        $teachers = Member::where('role_in_church', 'teacher')
+            ->orWhere('role_in_church', 'superintendent')
             ->orderBy('first_name')
             ->get();
 
@@ -55,7 +55,7 @@ class SabbathSchoolController extends Controller
                 'id' => (string) \Illuminate\Support\Str::uuid(),
                 'name' => $request->name,
                 'description' => $request->description,
-                'teacher_id' => $request->teacher_id,
+                'coordinator_id' => $request->coordinator_id,
                 'meeting_day' => $request->meeting_day,
                 'meeting_time' => $request->meeting_time,
                 'location' => $request->location,
@@ -70,14 +70,12 @@ class SabbathSchoolController extends Controller
 
     public function show(SabbathSchoolClass $class)
     {
-        $class->load(['teacher', 'members', 'attendanceRecords' => function($query) {
-            $query->latest('date')->take(10);
-        }]);
+        $class->load(['coordinator', 'members', 'attendance']);
 
         $attendanceStats = [
-            'total_sessions' => $class->attendanceRecords()->count(),
-            'average_attendance' => round($class->attendanceRecords()->avg('present_count') ?? 0, 1),
-            'last_attendance' => $class->attendanceRecords()->latest('date')->first(),
+            'total_sessions' => $class->attendance()->distinct('date')->count(),
+            'average_attendance' => round($class->attendance()->where('present', true)->count() / max($class->attendance()->distinct('date')->count(), 1), 1),
+            'last_attendance' => $class->attendance()->latest('date')->first(),
         ];
 
         return view('sabbath-school.show', compact('class', 'attendanceStats'));
@@ -85,8 +83,8 @@ class SabbathSchoolController extends Controller
 
     public function edit(SabbathSchoolClass $class)
     {
-        $teachers = Member::where('role', 'teacher')
-            ->orWhere('role', 'superintendent')
+        $teachers = Member::where('role_in_church', 'teacher')
+            ->orWhere('role_in_church', 'superintendent')
             ->orderBy('first_name')
             ->get();
 
@@ -98,7 +96,7 @@ class SabbathSchoolController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'teacher_id' => 'required|exists:members,id',
+            'coordinator_id' => 'required|exists:members,id',
             'meeting_day' => 'required|in:saturday,sunday',
             'meeting_time' => 'required|date_format:H:i',
             'location' => 'nullable|string|max:255',
@@ -113,7 +111,7 @@ class SabbathSchoolController extends Controller
             $class->update([
                 'name' => $request->name,
                 'description' => $request->description,
-                'teacher_id' => $request->teacher_id,
+                'coordinator_id' => $request->coordinator_id,
                 'meeting_day' => $request->meeting_day,
                 'meeting_time' => $request->meeting_time,
                 'location' => $request->location,
@@ -145,7 +143,7 @@ class SabbathSchoolController extends Controller
         $today = today();
 
         // Check if attendance already taken today
-        $existingAttendance = AttendanceRecord::where('sabbath_school_class_id', $class->id)
+        $existingAttendance = AttendanceRecord::where('class_id', $class->id)
             ->whereDate('date', $today)
             ->first();
 
@@ -157,7 +155,7 @@ class SabbathSchoolController extends Controller
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
             'present_members' => 'required|array',
-            'present_members.*' => 'exists:members,id',
+            'present_members.*' => 'exists:members,member_id',
             'notes' => 'nullable|string',
         ]);
 
@@ -166,24 +164,26 @@ class SabbathSchoolController extends Controller
         }
 
         DB::transaction(function () use ($request, $class) {
-            // Delete existing attendance for this date if any
-            AttendanceRecord::where('sabbath_school_class_id', $class->id)
+            // Delete existing attendance for this class and date
+            AttendanceRecord::where('class_id', $class->id)
                 ->whereDate('date', $request->date)
                 ->delete();
 
-            $presentCount = count($request->present_members);
-            $totalCount = $class->members()->count();
+            // Get all members in the class
+            $classMembers = $class->members()->pluck('member_id')->toArray();
 
-            AttendanceRecord::create([
-                'id' => (string) \Illuminate\Support\Str::uuid(),
-                'sabbath_school_class_id' => $class->id,
-                'date' => $request->date,
-                'present_count' => $presentCount,
-                'total_count' => $totalCount,
-                'present_members' => json_encode($request->present_members),
-                'notes' => $request->notes,
-                'recorded_by' => Auth::id(),
-            ]);
+            // Record attendance for each member
+            foreach ($classMembers as $memberId) {
+                AttendanceRecord::create([
+                    'id' => (string) \Illuminate\Support\Str::uuid(),
+                    'member_id' => $memberId,
+                    'class_id' => $class->id,
+                    'date' => $request->date,
+                    'present' => in_array($memberId, $request->present_members),
+                    'notes' => $request->notes,
+                    'marked_by' => Auth::id(),
+                ]);
+            }
         });
 
         return redirect()->route('sabbath-school.show', $class)
@@ -192,12 +192,12 @@ class SabbathSchoolController extends Controller
 
     public function reports()
     {
-        $classes = SabbathSchoolClass::with('attendanceRecords')->get();
+        $classes = SabbathSchoolClass::with('attendance')->get();
 
         $reports = $classes->map(function ($class) {
-            $attendanceRecords = $class->attendanceRecords;
-            $totalSessions = $attendanceRecords->count();
-            $averageAttendance = $totalSessions > 0 ? round($attendanceRecords->avg('present_count'), 1) : 0;
+            $attendanceRecords = $class->attendance;
+            $totalSessions = $attendanceRecords->distinct('date')->count();
+            $averageAttendance = $totalSessions > 0 ? round($attendanceRecords->where('present', true)->count() / $totalSessions, 1) : 0;
             $totalAttendance = $attendanceRecords->sum('present_count');
 
             return [

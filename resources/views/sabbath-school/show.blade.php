@@ -29,9 +29,9 @@
             <div class="bg-white p-6 rounded-xl border border-gray-200">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Teacher</p>
+                        <p class="text-sm font-medium text-gray-600">Coordinator</p>
                         <p class="text-lg font-semibold text-gray-900">
-                            {{ $class->teacher?->first_name }} {{ $class->teacher?->last_name }}
+                            {{ $class->coordinator?->first_name }} {{ $class->coordinator?->last_name }}
                         </p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -150,20 +150,29 @@
                     </div>
                 </div>
                 <div class="p-6">
-                    @if($class->attendanceRecords->count() > 0)
+                    @if($class->attendance->count() > 0)
                         <div class="space-y-3">
-                            @foreach($class->attendanceRecords as $record)
+                            @php
+                                $attendanceByDate = $class->attendance->groupBy(function($record) {
+                                    return $record->date->format('Y-m-d');
+                                })->sortKeysDesc()->take(10);
+                            @endphp
+                            @foreach($attendanceByDate as $date => $records)
+                                @php
+                                    $totalMembers = $class->members->count();
+                                    $presentCount = $records->where('present', true)->count();
+                                @endphp
                                 <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                                     <div>
-                                        <h4 class="font-medium">{{ $record->date->format('M j, Y') }}</h4>
-                                        <p class="text-sm text-gray-600">{{ $record->present_count }} of {{ $record->total_count }} present</p>
+                                        <h4 class="font-medium">{{ \Carbon\Carbon::parse($date)->format('M j, Y') }}</h4>
+                                        <p class="text-sm text-gray-600">{{ $presentCount }} of {{ $totalMembers }} present</p>
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if($record->present_count / $record->total_count >= 0.8) bg-green-100 text-green-800
-                                            @elseif($record->present_count / $record->total_count >= 0.6) bg-yellow-100 text-yellow-800
+                                            @if($presentCount / $totalMembers >= 0.8) bg-green-100 text-green-800
+                                            @elseif($presentCount / $totalMembers >= 0.6) bg-yellow-100 text-yellow-800
                                             @else bg-red-100 text-red-800 @endif">
-                                            {{ round(($record->present_count / $record->total_count) * 100) }}%
+                                            {{ round(($presentCount / $totalMembers) * 100) }}%
                                         </span>
                                     </div>
                                 </div>

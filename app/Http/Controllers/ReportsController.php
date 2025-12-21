@@ -19,11 +19,11 @@ class ReportsController extends Controller
             'total_members' => Member::count(),
             'active_members' => Member::where('membership_status', 'active')->count(),
             'total_contributions' => Contribution::sum('amount'),
-            'this_month_contributions' => Contribution::whereMonth('contribution_date', now()->month)
-                ->whereYear('contribution_date', now()->year)
+            'this_month_contributions' => Contribution::whereMonth('date', now()->month)
+                ->whereYear('date', now()->year)
                 ->sum('amount'),
             'total_classes' => SabbathSchoolClass::count(),
-            'total_attendance_records' => AttendanceRecord::count(),
+            'total_attendance_records' => AttendanceRecord::distinct('date')->count('date'),
         ];
 
         return view('reports.index', compact('stats'));
@@ -31,7 +31,7 @@ class ReportsController extends Controller
 
     public function members()
     {
-        $members = Member::with(['sabbathSchoolClass'])
+        $members = Member::with(['sabbathClass'])
             ->orderBy('first_name')
             ->get();
 
@@ -51,22 +51,22 @@ class ReportsController extends Controller
 
     public function attendance()
     {
-        $classes = SabbathSchoolClass::with(['attendanceRecords' => function($query) {
+        $classes = SabbathSchoolClass::with(['attendance' => function($query) {
             $query->orderBy('date', 'desc');
         }])->get();
 
         $attendanceStats = $classes->map(function ($class) {
-            $records = $class->attendanceRecords;
-            $totalSessions = $records->count();
+            $records = $class->attendance;
+            $totalSessions = $records->distinct('date')->count();
 
             return [
                 'class' => $class,
                 'total_sessions' => $totalSessions,
-                'average_attendance' => $totalSessions > 0 ? round($records->avg('present_count'), 1) : 0,
-                'total_present' => $records->sum('present_count'),
+                'average_attendance' => $totalSessions > 0 ? round($records->where('present', true)->count() / $totalSessions, 1) : 0,
+                'total_present' => $records->where('present', true)->count(),
                 'attendance_rate' => $totalSessions > 0 ?
-                    round(($records->sum('present_count') / ($totalSessions * $class->members()->count())) * 100, 1) : 0,
-                'recent_sessions' => $records->take(5),
+                    round(($records->where('present', true)->count() / ($totalSessions * $class->members()->count())) * 100, 1) : 0,
+                'recent_sessions' => $records->distinct('date')->orderBy('date', 'desc')->take(5)->get(),
             ];
         });
 
@@ -76,22 +76,32 @@ class ReportsController extends Controller
     public function financial()
     {
         $contributions = Contribution::with(['member', 'category'])
-            ->orderBy('contribution_date', 'desc')
+            ->orderBy('date', 'desc')
             ->get();
 
         $financialStats = [
-            'total_income' => $contributions->where('category.category_type', 'income')->sum('amount'),
-            'total_expenses' => $contributions->where('category.category_type', 'expense')->sum('amount'),
-            'net_balance' => $contributions->where('category.category_type', 'income')->sum('amount') -
-                           $contributions->where('category.category_type', 'expense')->sum('amount'),
-            'this_month_income' => $contributions->where('category.category_type', 'income')
-                ->whereMonth('contribution_date', now()->month)
-                ->whereYear('contribution_date', now()->year)
-                ->sum('amount'),
-            'this_month_expenses' => $contributions->where('category.category_type', 'expense')
-                ->whereMonth('contribution_date', now()->month)
-                ->whereYear('contribution_date', now()->year)
-                ->sum('amount'),
+            'total_income' => Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'income')
+                ->sum('contributions.amount'),
+            'total_expenses' => Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'expense')
+                ->sum('contributions.amount'),
+            'net_balance' => Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'income')
+                ->sum('contributions.amount') -
+                Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'expense')
+                ->sum('contributions.amount'),
+            'this_month_income' => Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'income')
+                ->whereMonth('contributions.date', now()->month)
+                ->whereYear('contributions.date', now()->year)
+                ->sum('contributions.amount'),
+            'this_month_expenses' => Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
+                ->where('financial_categories.category_type', 'expense')
+                ->whereMonth('contributions.date', now()->month)
+                ->whereYear('contributions.date', now()->year)
+                ->sum('contributions.amount'),
         ];
 
         $categoryBreakdown = FinancialCategory::with(['contributions' => function($query) {

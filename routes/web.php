@@ -86,7 +86,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Sabbath School Routes
-    Route::resource('sabbath-school', App\Http\Controllers\SabbathSchoolController::class);
+    Route::resource('sabbath-school', App\Http\Controllers\SabbathSchoolController::class)->parameters([
+        'sabbath-school' => 'class'
+    ]);
 
     Route::prefix('sabbath-school')->name('sabbath-school.')->controller(App\Http\Controllers\SabbathSchoolController::class)->group(function () {
         Route::get('/{class}/attendance', 'attendance')->name('attendance');

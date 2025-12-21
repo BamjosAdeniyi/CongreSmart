@@ -47,7 +47,7 @@
 
                     <div class="mt-4 pt-4 border-t border-gray-200">
                         <div class="text-sm text-gray-600">
-                            <span class="font-medium">Teacher:</span> {{ $stat['class']->teacher?->first_name }} {{ $stat['class']->teacher?->last_name }}
+                            <span class="font-medium">Coordinator:</span> {{ $stat['class']->coordinator?->first_name }} {{ $stat['class']->coordinator?->last_name }}
                         </div>
                         <div class="text-sm text-gray-600 mt-1">
                             <span class="font-medium">Meeting:</span> {{ ucfirst($stat['class']->meeting_day) }} at {{ $stat['class']->meeting_time }}
