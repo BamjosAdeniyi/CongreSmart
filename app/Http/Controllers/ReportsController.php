@@ -58,14 +58,15 @@ class ReportsController extends Controller
         $attendanceStats = $classes->map(function ($class) {
             $records = $class->attendance;
             $totalSessions = $records->distinct('date')->count();
+            $memberCount = $class->members()->count();
 
             return [
                 'class' => $class,
                 'total_sessions' => $totalSessions,
                 'average_attendance' => $totalSessions > 0 ? round($records->where('present', true)->count() / $totalSessions, 1) : 0,
                 'total_present' => $records->where('present', true)->count(),
-                'attendance_rate' => $totalSessions > 0 ?
-                    round(($records->where('present', true)->count() / ($totalSessions * $class->members()->count())) * 100, 1) : 0,
+                'attendance_rate' => ($totalSessions > 0 && $memberCount > 0) ?
+                    round(($records->where('present', true)->count() / ($totalSessions * $memberCount)) * 100, 1) : 0,
                 'recent_sessions' => $records->distinct('date')->orderBy('date', 'desc')->take(5)->get(),
             ];
         });
@@ -105,8 +106,8 @@ class ReportsController extends Controller
         ];
 
         $categoryBreakdown = FinancialCategory::with(['contributions' => function($query) {
-            $query->selectRaw('financial_category_id, SUM(amount) as total_amount')
-                  ->groupBy('financial_category_id');
+            $query->selectRaw('category_id, SUM(amount) as total_amount')
+                  ->groupBy('category_id');
         }])->get()->map(function ($category) {
             return [
                 'name' => $category->name,

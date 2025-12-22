@@ -25,25 +25,30 @@
                 <h2 class="text-lg font-semibold">Member List</h2>
             </div>
             <div class="p-6">
-                <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                    <div class="flex-1 relative">
-                        <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input
-                            type="text"
-                            placeholder="Search by name or email..."
-                            class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
-                        />
+                <form method="GET" action="{{ route('members.index') }}" id="filter-form">
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                        <div class="flex-1 relative">
+                            <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input
+                                type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                placeholder="Search by name or email..."
+                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
+                                id="search-input"
+                            />
+                        </div>
+                        <select name="status" class="w-full sm:w-48 h-9 px-3 py-2 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm" id="status-filter">
+                            <option value="all" {{ request('status') === 'all' || !request('status') ? 'selected' : '' }}>All Status</option>
+                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="transferred" {{ request('status') === 'transferred' ? 'selected' : '' }}>Transferred</option>
+                            <option value="archived" {{ request('status') === 'archived' ? 'selected' : '' }}>Archived</option>
+                        </select>
                     </div>
-                    <select class="w-full sm:w-48 h-9 px-3 py-2 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
-                        <option value="all">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="transferred">Transferred</option>
-                        <option value="archived">Archived</option>
-                    </select>
-                </div>
+                </form>
 
                 <div class="border rounded-lg overflow-x-auto">
                     <table class="w-full">
@@ -164,3 +169,25 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const filterForm = document.getElementById('filter-form');
+
+    // Submit form when search input changes (with debounce)
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterForm.submit();
+        }, 500);
+    });
+
+    // Submit form when status filter changes
+    statusFilter.addEventListener('change', function() {
+        filterForm.submit();
+    });
+});
+</script>

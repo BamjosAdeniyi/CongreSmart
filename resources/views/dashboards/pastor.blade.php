@@ -73,9 +73,7 @@
                     <h3 class="text-lg font-semibold">Attendance Trend</h3>
                 </div>
                 <div class="px-6 pb-6">
-                    <div class="h-64 flex items-center justify-center text-gray-400">
-                        <p class="text-sm">Chart will be implemented with Chart.js</p>
-                    </div>
+                    <canvas id="attendanceChart" width="400" height="200"></canvas>
                 </div>
             </div>
 
@@ -85,9 +83,7 @@
                     <h3 class="text-lg font-semibold">Financial Breakdown</h3>
                 </div>
                 <div class="px-6 pb-6">
-                    <div class="h-64 flex items-center justify-center text-gray-400">
-                        <p class="text-sm">Chart will be implemented with Chart.js</p>
-                    </div>
+                    <canvas id="financialChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -167,3 +163,79 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendance Trend Chart
+    const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+    const attendanceData = @json($attendanceTrend ?? []);
+    
+    new Chart(attendanceCtx, {
+        type: 'line',
+        data: {
+            labels: attendanceData.map(item => item.month),
+            datasets: [{
+                label: 'Attendance',
+                data: attendanceData.map(item => item.attendance),
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    // Financial Breakdown Chart
+    const financialCtx = document.getElementById('financialChart').getContext('2d');
+    const financialData = @json($financialBreakdown ?? []);
+    
+    new Chart(financialCtx, {
+        type: 'doughnut',
+        data: {
+            labels: financialData.map(item => item.category),
+            datasets: [{
+                data: financialData.map(item => item.amount),
+                backgroundColor: [
+                    'rgb(59, 130, 246)',
+                    'rgb(16, 185, 129)',
+                    'rgb(245, 158, 11)',
+                    'rgb(239, 68, 68)',
+                    'rgb(139, 92, 246)',
+                    'rgb(236, 72, 153)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

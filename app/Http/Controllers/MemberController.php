@@ -93,7 +93,7 @@ class MemberController extends Controller
     public function show(Member $member)
     {
         $member->load(['sabbathClass', 'attendance' => function($query) {
-            $query->with('sabbathClass')->orderBy('date', 'desc')->limit(10);
+            $query->with('class')->orderBy('date', 'desc')->limit(10);
         }, 'contributions' => function($query) {
             $query->orderBy('date', 'desc')->limit(10);
         }]);

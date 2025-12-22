@@ -5,7 +5,28 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
 
+// Landing page - redirect authenticated users to their dashboard
 Route::get('/', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        $role = $user->role ?? 'pastor';
+        
+        // Map role to dashboard route
+        $roleRoutes = [
+            'pastor' => 'dashboard.pastor',
+            'clerk' => 'dashboard.clerk',
+            'superintendent' => 'dashboard.superintendent',
+            'coordinator' => 'dashboard.coordinator',
+            'financial' => 'dashboard.financial',
+            'welfare' => 'dashboard.welfare',
+            'ict' => 'dashboard.ict',
+        ];
+        
+        $dashboardRoute = $roleRoutes[$role] ?? 'dashboard.pastor';
+        
+        return redirect()->route($dashboardRoute);
+    }
+    
     return view('landing');
 });
 
@@ -131,16 +152,20 @@ Route::middleware(['auth'])->group(function () {
 
     // Administration Routes (ICT only)
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', function () {
-            return view('admin.users');
-        })->name('users');
+        Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users')->middleware('role:ict');
+        Route::get('/users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create')->middleware('role:ict');
+        Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store')->middleware('role:ict');
+        Route::get('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('users.show')->middleware('role:ict');
+        Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit')->middleware('role:ict');
+        Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update')->middleware('role:ict');
+        Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy')->middleware('role:ict');
         
         Route::get('/permissions', function () {
             return view('admin.permissions');
-        })->name('permissions');
+        })->name('permissions')->middleware('role:ict');
         
         Route::get('/logs', function () {
             return view('admin.logs');
-        })->name('logs');
+        })->name('logs')->middleware('role:ict');
     });
 });

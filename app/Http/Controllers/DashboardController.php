@@ -95,11 +95,45 @@ SQL;
             'upcoming_birthdays' => $upcomingBirthdays,
         ];
 
+        // Chart data for Attendance Trend (last 12 months)
+        $attendanceTrend = Cache::remember('dashboard.attendance_trend', 30, function () {
+            $data = [];
+            for ($i = 11; $i >= 0; $i--) {
+                $date = now()->subMonths($i);
+                $present = AttendanceRecord::where('present', 1)
+                    ->whereYear('date', $date->year)
+                    ->whereMonth('date', $date->month)
+                    ->count();
+                $data[] = [
+                    'month' => $date->format('M Y'),
+                    'attendance' => $present
+                ];
+            }
+            return $data;
+        });
+
+        // Chart data for Financial Breakdown
+        $financialBreakdown = Cache::remember('dashboard.financial_breakdown', 30, function () {
+            return \App\Models\FinancialCategory::with(['contributions' => function ($query) {
+                $query->selectRaw('category_id, SUM(amount) as total')
+                      ->groupBy('category_id');
+            }])->get()->map(function ($category) {
+                return [
+                    'category' => $category->name,
+                    'amount' => $category->contributions->sum('total')
+                ];
+            })->filter(function ($item) {
+                return $item['amount'] > 0;
+            })->values();
+        });
+
         return view('dashboards.pastor', compact(
             'totalMembers',
             'attendancePercent',
             'monthlyIncome',
-            'alerts'
+            'alerts',
+            'attendanceTrend',
+            'financialBreakdown'
         ));
     }
 
@@ -237,35 +271,29 @@ SQL;
     public function financial(Request $request)
     {
         // Financial statistics
-        $totalIncome = Cache::remember('dashboard.financial.total_income', 30, function () {
-            return \App\Models\Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
-                ->where('financial_categories.category_type', 'income')
-                ->sum('contributions.amount');
+        $totalContributions = Cache::remember('dashboard.financial.total_contributions', 30, function () {
+            return \App\Models\Contribution::sum('amount');
         });
-
-        $totalExpenses = Cache::remember('dashboard.financial.total_expenses', 30, function () {
-            return \App\Models\Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
-                ->where('financial_categories.category_type', 'expense')
-                ->sum('contributions.amount');
-        });
-
-        $netBalance = $totalIncome - $totalExpenses;
 
         // This month's contributions
-        $thisMonthIncome = Cache::remember('dashboard.financial.this_month_income', 30, function () {
-            return \App\Models\Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
-                ->where('financial_categories.category_type', 'income')
-                ->whereMonth('contributions.date', now()->month)
-                ->whereYear('contributions.date', now()->year)
-                ->sum('contributions.amount');
+        $monthlyContributions = Cache::remember('dashboard.financial.monthly_contributions', 30, function () {
+            return \App\Models\Contribution::whereMonth('date', now()->month)
+                ->whereYear('date', now()->year)
+                ->sum('amount');
         });
 
-        $thisMonthExpenses = Cache::remember('dashboard.financial.this_month_expenses', 30, function () {
-            return \App\Models\Contribution::join('financial_categories', 'contributions.category_id', '=', 'financial_categories.id')
-                ->where('financial_categories.category_type', 'expense')
-                ->whereMonth('contributions.date', now()->month)
-                ->whereYear('contributions.date', now()->year)
-                ->sum('contributions.amount');
+        // Categories with stats
+        $categories = Cache::remember('dashboard.financial.categories', 30, function () {
+            return \App\Models\FinancialCategory::withCount('contributions')
+                ->with(['contributions' => function ($query) {
+                    $query->selectRaw('category_id, SUM(amount) as total_amount')
+                          ->groupBy('category_id');
+                }])
+                ->get()
+                ->map(function ($category) {
+                    $category->total_amount = $category->contributions->sum('total_amount');
+                    return $category;
+                });
         });
 
         // Recent contributions
@@ -277,11 +305,9 @@ SQL;
         });
 
         return view('dashboards.financial', compact(
-            'totalIncome',
-            'totalExpenses',
-            'netBalance',
-            'thisMonthIncome',
-            'thisMonthExpenses',
+            'totalContributions',
+            'monthlyContributions',
+            'categories',
             'recentContributions'
         ));
     }
@@ -315,31 +341,34 @@ SQL;
     {
         // System statistics
         $totalUsers = Cache::remember('dashboard.ict.total_users', 30, fn() => \App\Models\User::count());
-        
+
         $activeUsers = Cache::remember('dashboard.ict.active_users', 30, function () {
             return \App\Models\User::where('email_verified_at', '!=', null)->count();
         });
 
-        // Recent system activity (this would need logging)
+        // For demo purposes, simulate active sessions
+        $activeSessions = Cache::remember('dashboard.ict.active_sessions', 30, fn() => rand(5, 15));
+
+        // Recent system activity
         $recentActivity = Cache::remember('dashboard.ict.recent_activity', 30, function () {
-            // For now, just return recent user registrations
             return \App\Models\User::orderBy('created_at', 'desc')
                                  ->limit(5)
                                  ->get();
         });
 
-        // System health (simplified)
-        $systemHealth = [
-            'database' => 'Healthy',
-            'storage' => 'Good',
-            'backups' => 'Up to date'
-        ];
+        // System health percentage
+        $systemHealth = 95; // Simulated
+
+        // Pending tasks
+        $pendingTasks = Cache::remember('dashboard.ict.pending_tasks', 30, fn() => rand(0, 5));
 
         return view('dashboards.ict', compact(
             'totalUsers',
             'activeUsers',
+            'activeSessions',
             'recentActivity',
-            'systemHealth'
+            'systemHealth',
+            'pendingTasks'
         ));
     }
 }

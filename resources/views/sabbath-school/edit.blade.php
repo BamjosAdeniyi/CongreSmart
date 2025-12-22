@@ -42,48 +42,13 @@
                     <select id="coordinator_id" name="coordinator_id"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('coordinator_id') border-red-500 @enderror" required>
                         <option value="">Select a coordinator</option>
-                        @foreach($teachers as $teacher)
-                            <option value="{{ $teacher->id }}" {{ old('coordinator_id', $class->coordinator_id) == $teacher->id ? 'selected' : '' }}>
-                                {{ $teacher->first_name }} {{ $teacher->last_name }}
+                        @foreach($coordinators as $coordinator)
+                            <option value="{{ $coordinator->id }}" {{ old('coordinator_id', $class->coordinator_id) == $coordinator->id ? 'selected' : '' }}>
+                                {{ $coordinator->name }}
                             </option>
                         @endforeach
                     </select>
                     @error('coordinator_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="meeting_day" class="block text-sm font-medium text-gray-700 mb-2">Meeting Day *</label>
-                        <select id="meeting_day" name="meeting_day"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('meeting_day') border-red-500 @enderror" required>
-                            <option value="">Select day</option>
-                            <option value="Friday" {{ old('meeting_day', $class->meeting_day) == 'Friday' ? 'selected' : '' }}>Friday</option>
-                            <option value="Saturday" {{ old('meeting_day', $class->meeting_day) == 'Saturday' ? 'selected' : '' }}>Saturday</option>
-                            <option value="Sunday" {{ old('meeting_day', $class->meeting_day) == 'Sunday' ? 'selected' : '' }}>Sunday</option>
-                        </select>
-                        @error('meeting_day')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="meeting_time" class="block text-sm font-medium text-gray-700 mb-2">Meeting Time *</label>
-                        <input type="time" id="meeting_time" name="meeting_time" value="{{ old('meeting_time', $class->meeting_time) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('meeting_time') border-red-500 @enderror" required>
-                        @error('meeting_time')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                    <input type="text" id="location" name="location" value="{{ old('location', $class->location) }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('location') border-red-500 @enderror"
-                           placeholder="e.g., Main Sanctuary, Room 101">
-                    @error('location')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

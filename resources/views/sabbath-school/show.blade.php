@@ -17,6 +17,10 @@
                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
                     Edit Class
                 </a>
+                <a href="{{ route('sabbath-school.assign-members', $class) }}"
+                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    Assign Members
+                </a>
                 <a href="{{ route('sabbath-school.attendance', $class) }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                     Take Attendance
