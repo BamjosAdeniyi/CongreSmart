@@ -94,7 +94,7 @@
                     <h2 class="text-lg font-semibold">Quick Stats</h2>
                 </div>
                 <div class="p-6">
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="p-4 bg-blue-50 rounded-lg">
                             <div class="flex items-center gap-2 mb-2">
                                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,14 @@
                                 </svg>
                                 <span class="text-xs text-gray-600">Attendance</span>
                             </div>
-                            <p class="text-sm">{{ rand(75, 95) }}%</p>
+                            <p class="text-sm">
+                                @php
+                                    $totalAttendance = $member->attendance->count();
+                                    $presentCount = $member->attendance->where('present', true)->count();
+                                    $attendanceRate = $totalAttendance > 0 ? round(($presentCount / $totalAttendance) * 100) : 0;
+                                @endphp
+                                {{ $attendanceRate }}%
+                            </p>
                         </div>
 
                         <div class="p-4 bg-yellow-50 rounded-lg">
@@ -126,6 +133,21 @@
                             </div>
                             <p class="text-sm">
                                 {{ $member->date_of_birth ? \Carbon\Carbon::parse($member->date_of_birth)->age : 'N/A' }} years
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-purple-50 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-xs text-gray-600">Total Contributions</span>
+                            </div>
+                            <p class="text-sm">
+                                @php
+                                    $totalContributions = $member->contributions->sum('amount');
+                                @endphp
+                                ${{ number_format($totalContributions, 2) }}
                             </p>
                         </div>
                     </div>
@@ -228,14 +250,10 @@
                         <label class="text-sm text-gray-500">Baptism Status</label>
                         <p class="text-sm mt-1 capitalize">{{ str_replace('-', ' ', $member->baptism_status ?? 'not-baptized') }}</p>
                     </div>
-                    @if($member->date_of_baptism)
-                        <div>
-                            <label class="text-sm text-gray-500">Date of Baptism</label>
-                            <p class="text-sm mt-1">
-                                {{ \Carbon\Carbon::parse($member->date_of_baptism)->format('F j, Y') }}
-                            </p>
-                        </div>
-                    @endif
+                    <div>
+                        <label class="text-sm text-gray-500">Sabbath School Class</label>
+                        <p class="text-sm mt-1">{{ $member->sabbathClass ? $member->sabbathClass->name : 'Not assigned' }}</p>
+                    </div>
                 </div>
             </div>
 
@@ -251,22 +269,28 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @for($i = 0; $i < 10; $i++)
+                            @forelse($member->attendance ?? [] as $record)
                                 <tr>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ \Carbon\Carbon::now()->subDays(rand(1, 30))->format('M j, Y') }}
+                                        {{ \Carbon\Carbon::parse($record->date)->format('M j, Y') }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        Sabbath School Class {{ rand(1, 5) }}
+                                        {{ $record->sabbathClass ? $record->sabbathClass->name : 'N/A' }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(rand(0, 1)) bg-green-100 text-green-800 @else bg-red-100 text-red-800 @endif">
-                                            {{ rand(0, 1) ? 'Present' : 'Absent' }}
+                                            @if($record->present) bg-green-100 text-green-800 @else bg-red-100 text-red-800 @endif">
+                                            {{ $record->present ? 'Present' : 'Absent' }}
                                         </span>
                                     </td>
                                 </tr>
-                            @endfor
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+                                        No attendance records found for this member.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -15,7 +16,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Dashboard Routes - Redirect to role-specific dashboard
     Route::get('/dashboard', function () {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             return redirect()->route('login');
         }
@@ -47,29 +48,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/pastor', [DashboardController::class, 'pastor'])
         ->name('dashboard.pastor');
     
-    Route::get('/dashboard/clerk', function () {
-        return view('dashboards.clerk');
-    })->name('dashboard.clerk');
+    Route::get('/dashboard/clerk', [DashboardController::class, 'clerk'])
+        ->name('dashboard.clerk');
     
-    Route::get('/dashboard/superintendent', function () {
-        return view('dashboards.superintendent');
-    })->name('dashboard.superintendent');
+    Route::get('/dashboard/superintendent', [DashboardController::class, 'superintendent'])
+        ->name('dashboard.superintendent');
     
-    Route::get('/dashboard/coordinator', function () {
-        return view('dashboards.coordinator');
-    })->name('dashboard.coordinator');
+    Route::get('/dashboard/coordinator', [DashboardController::class, 'coordinator'])
+        ->name('dashboard.coordinator');
     
-    Route::get('/dashboard/financial', function () {
-        return view('dashboards.financial');
-    })->name('dashboard.financial');
+    Route::get('/dashboard/financial', [DashboardController::class, 'financial'])
+        ->name('dashboard.financial');
     
-    Route::get('/dashboard/welfare', function () {
-        return view('dashboards.welfare');
-    })->name('dashboard.welfare');
+    Route::get('/dashboard/welfare', [DashboardController::class, 'welfare'])
+        ->name('dashboard.welfare');
     
-    Route::get('/dashboard/ict', function () {
-        return view('dashboards.ict');
-    })->name('dashboard.ict');
+    Route::get('/dashboard/ict', [DashboardController::class, 'ict'])
+        ->name('dashboard.ict');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -7,6 +7,22 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
+    /**
+     * Get the count of unread notifications for the current user
+     */
+    public static function getUnreadCount()
+    {
+        // For now, return sample data
+        // TODO: Replace with database query when notifications table is implemented
+        $sampleNotifications = [
+            ['read' => false], // Welcome notification
+            ['read' => false], // System maintenance
+            ['read' => true],  // Member added
+            ['read' => true],  // Financial report
+        ];
+
+        return count(array_filter($sampleNotifications, fn($n) => !$n['read']));
+    }
     public function index()
     {
         // For now, we'll create some sample notifications

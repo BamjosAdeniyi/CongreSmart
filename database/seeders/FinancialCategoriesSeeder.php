@@ -11,12 +11,16 @@ class FinancialCategoriesSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name'=>'Tithe','category_type'=>'regular','description'=>'Regular tithe giving'],
-            ['name'=>'Offering','category_type'=>'regular','description'=>'General offering'],
-            ['name'=>'Welfare','category_type'=>'project','description'=>'Welfare support fund'],
-            ['name'=>'Building Fund','category_type'=>'project','description'=>'Building / maintenance'],
-            ['name'=>'Missions','category_type'=>'project','description'=>'Mission support'],
-            ['name'=>'Special','category_type'=>'special','description'=>'Special collections'],
+            ['name'=>'Tithe','category_type'=>'income','description'=>'Regular tithe giving'],
+            ['name'=>'Offering','category_type'=>'income','description'=>'General offering'],
+            ['name'=>'Welfare','category_type'=>'income','description'=>'Welfare support fund'],
+            ['name'=>'Building Fund','category_type'=>'income','description'=>'Building / maintenance'],
+            ['name'=>'Missions','category_type'=>'income','description'=>'Mission support'],
+            ['name'=>'Special','category_type'=>'income','description'=>'Special collections'],
+            ['name'=>'Utilities','category_type'=>'expense','description'=>'Electricity, water, etc.'],
+            ['name'=>'Maintenance','category_type'=>'expense','description'=>'Building maintenance'],
+            ['name'=>'Office Supplies','category_type'=>'expense','description'=>'Office and administrative supplies'],
+            ['name'=>'Mission Expenses','category_type'=>'expense','description'=>'Mission trip expenses'],
         ];
 
         foreach ($categories as $c) {

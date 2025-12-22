@@ -10,8 +10,8 @@
     <div class="w-full max-w-md bg-white rounded-xl border border-gray-200 shadow-lg">
         <div class="p-6 space-y-1 text-center">
             <div class="flex justify-center mb-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                    <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-8 h-8 object-contain" />
+                <div class="w-15 h-15 rounded-full flex items-center justify-center">
+                    <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-14 h-14 object-contain" />
                 </div>
             </div>
             <h1 class="text-2xl font-semibold">CongreSmart</h1>

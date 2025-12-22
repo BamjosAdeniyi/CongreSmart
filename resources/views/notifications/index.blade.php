@@ -108,7 +108,8 @@
                                 <p class="mt-1 text-gray-600">{{ $notification['message'] }}</p>
                                 @if(!$notification['read'])
                                     <div class="mt-3">
-                                        <button onclick="markAsRead({{ $notification['id'] }})"
+                                        <button data-notification-id="{{ $notification['id'] }}"
+                                                onclick="markAsRead(this.dataset.notificationId)"
                                                 class="text-sm text-blue-600 hover:text-blue-900 font-medium">
                                             Mark as read
                                         </button>
