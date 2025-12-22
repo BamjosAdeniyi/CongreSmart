@@ -269,7 +269,7 @@ class SabbathSchoolController extends Controller
 
         $validator = Validator::make($request->all(), [
             'member_ids' => 'array',
-            'member_ids.*' => 'exists:members,id',
+            'member_ids.*' => 'exists:members,member_id',
         ]);
 
         if ($validator->fails()) {
@@ -282,7 +282,7 @@ class SabbathSchoolController extends Controller
 
             // Add new assignments
             if ($request->member_ids) {
-                Member::whereIn('id', $request->member_ids)->update(['sabbath_school_class_id' => $class->id]);
+                Member::whereIn('member_id', $request->member_ids)->update(['sabbath_school_class_id' => $class->id]);
             }
         });
 

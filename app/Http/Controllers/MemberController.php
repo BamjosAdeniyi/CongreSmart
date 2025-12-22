@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MemberStoreRequest;
+use App\Http\Requests\MemberUpdateRequest;
 use App\Models\Member;
 use App\Models\SabbathSchoolClass;
 use Illuminate\Http\Request;
@@ -50,26 +52,9 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MemberStoreRequest $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'family_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female',
-            'phone' => 'required|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'address' => 'required|string',
-            'date_of_birth' => 'required|date|before:today',
-            'membership_type' => 'required|in:community,student',
-            'membership_category' => 'required|in:adult,youth,child,university-student',
-            'role_in_church' => 'nullable|string|max:255',
-            'baptism_status' => 'required|in:baptized,not-baptized,pending',
-            'date_of_baptism' => 'nullable|date|before_or_equal:today|required_if:baptism_status,baptized',
-            'membership_date' => 'required|date|before_or_equal:today',
-            'sabbath_school_class_id' => 'nullable|exists:sabbath_school_classes,id',
-        ]);
+        $validated = $request->validated();
 
         // Generate UUID for member_id
         $validated['member_id'] = (string) Str::uuid();
@@ -114,27 +99,9 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Member $member)
+    public function update(MemberUpdateRequest $request, Member $member)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'family_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female',
-            'phone' => 'required|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'address' => 'required|string',
-            'date_of_birth' => 'required|date|before:today',
-            'membership_type' => 'required|in:community,student',
-            'membership_category' => 'required|in:adult,youth,child,university-student',
-            'role_in_church' => 'nullable|string|max:255',
-            'baptism_status' => 'required|in:baptized,not-baptized,pending',
-            'date_of_baptism' => 'nullable|date|before_or_equal:today|required_if:baptism_status,baptized',
-            'membership_date' => 'required|date|before_or_equal:today',
-            'membership_status' => 'required|in:active,inactive,transferred,archived',
-            'sabbath_school_class_id' => 'nullable|exists:sabbath_school_classes,id',
-        ]);
+        $validated = $request->validated();
 
         $validated['updated_by'] = Auth::id();
 

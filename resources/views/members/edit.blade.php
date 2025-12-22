@@ -3,9 +3,9 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             @php
                 try {
-                    $backUrl = route('members.show', $member->id);
+                    $backUrl = route('members.show', $member->member_id);
                 } catch (\Exception $e) {
-                    $backUrl = url('/members/' . $member->id);
+                    $backUrl = url('/members/' . $member->member_id);
                 }
             @endphp
             <a href="{{ $backUrl }}" class="text-gray-600 hover:text-gray-900 flex items-center gap-2 w-fit px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('members.update', $member->id) }}" class="space-y-6">
+        <form method="POST" action="{{ route('members.update', $member->member_id) }}" class="space-y-6">
             @csrf
             @method('PUT')
 

@@ -16,16 +16,16 @@
                     Back
                 </a>
                 <div>
-                    <h1 class="text-2xl text-gray-900">{{ $member->first_name }} {{ $member->last_name }}</h1>
+                    <h1 class="text-2xl text-gray-900">{{ $member->full_name }}</h1>
                     <p class="text-gray-500">{{ $member->family_name }}</p>
                 </div>
             </div>
             @if(auth()->user()->role === 'clerk' || auth()->user()->role === 'ict')
                 @php
                     try {
-                        $editUrl = route('members.edit', $member->id);
+                        $editUrl = route('members.edit', $member->member_id);
                     } catch (\Exception $e) {
-                        $editUrl = url('/members/' . $member->id . '/edit');
+                        $editUrl = url('/members/' . $member->member_id . '/edit');
                     }
                 @endphp
                 <a href="{{ $editUrl }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">

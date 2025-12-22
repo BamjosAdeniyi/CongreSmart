@@ -55,6 +55,7 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">Age</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px] hidden sm:table-cell">Contact</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px] hidden xl:table-cell">Membership Type</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">Category</th>
@@ -69,9 +70,12 @@
                                 <tr>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $member->first_name }} {{ $member->last_name }}</p>
+                                            <p class="text-sm font-medium text-gray-900">{{ $member->full_name }}</p>
                                             <p class="text-xs text-gray-500">{{ $member->family_name ?? 'N/A' }}</p>
                                         </div>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $member->age }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
                                         <div>
@@ -121,9 +125,9 @@
                                         <div class="flex justify-end gap-1 md:gap-2">
                                             @php
                                                 try {
-                                                    $viewUrl = route('members.show', $member->id);
+                                                    $viewUrl = route('members.show', $member->member_id);
                                                 } catch (\Exception $e) {
-                                                    $viewUrl = url('/members/' . $member->id);
+                                                    $viewUrl = url('/members/' . $member->member_id);
                                                 }
                                             @endphp
                                             <a href="{{ $viewUrl }}" class="text-blue-600 hover:text-blue-900 p-1">
@@ -135,9 +139,9 @@
                                             @if(auth()->user()->role === 'clerk' || auth()->user()->role === 'ict')
                                                 @php
                                                     try {
-                                                        $editUrl = route('members.edit', $member->id);
+                                                        $editUrl = route('members.edit', $member->member_id);
                                                     } catch (\Exception $e) {
-                                                        $editUrl = url('/members/' . $member->id . '/edit');
+                                                        $editUrl = url('/members/' . $member->member_id . '/edit');
                                                     }
                                                 @endphp
                                                 <a href="{{ $editUrl }}" class="text-gray-600 hover:text-gray-900 p-1 hidden sm:inline">

@@ -32,6 +32,30 @@ class Member extends Model
     ];
 
     /* -----------------------
+       Accessors
+    ------------------------*/
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getAgeAttribute()
+    {
+        return $this->date_of_birth ? \Carbon\Carbon::parse($this->date_of_birth)->age : 0;
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'member_id';
+    }
+
+    /* -----------------------
        Relationships
     ------------------------*/
 
