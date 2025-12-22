@@ -21,7 +21,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Income</p>
-                        <p class="text-2xl font-bold text-green-600">${{ number_format($summary['total_income'] ?? 0, 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600">₦{{ number_format($summary['total_income'] ?? 0, 2) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +35,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Expenses</p>
-                        <p class="text-2xl font-bold text-red-600">${{ number_format($summary['total_expenses'] ?? 0, 2) }}</p>
+                        <p class="text-2xl font-bold text-red-600">₦{{ number_format($summary['total_expenses'] ?? 0, 2) }}</p>
                     </div>
                     <div class="p-3 bg-red-100 rounded-lg">
                         <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600">Net Balance</p>
                         <p class="text-2xl font-bold {{ ($summary['net_balance'] ?? 0) >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                            ${{ number_format(abs($summary['net_balance'] ?? 0), 2) }}
+                            ₦{{ number_format(abs($summary['net_balance'] ?? 0), 2) }}
                         </p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -65,7 +65,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">This Month</p>
-                        <p class="text-2xl font-bold text-gray-900">${{ number_format($summary['this_month'] ?? 0, 2) }}</p>
+                        <p class="text-2xl font-bold text-gray-900">₦{{ number_format($summary['this_month'] ?? 0, 2) }}</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,8 +87,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         <p>Chart visualization would go here</p>
-                        <p class="text-sm mt-1">Income: ${{ number_format($summary['total_income'] ?? 0, 2) }}</p>
-                        <p class="text-sm">Expenses: ${{ number_format($summary['total_expenses'] ?? 0, 2) }}</p>
+                        <p class="text-sm mt-1">Income: ₦{{ number_format($summary['total_income'] ?? 0, 2) }}</p>
+                        <p class="text-sm">Expenses: ₦{{ number_format($summary['total_expenses'] ?? 0, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
                                 <div class="w-3 h-3 rounded-full {{ $category['type'] === 'income' ? 'bg-green-500' : 'bg-red-500' }}"></div>
                                 <span class="text-sm font-medium">{{ $category['name'] }}</span>
                             </div>
-                            <span class="text-sm font-semibold">${{ number_format($category['total'], 2) }}</span>
+                            <span class="text-sm font-semibold">₦{{ number_format($category['total'], 2) }}</span>
                         </div>
                     @empty
                         <p class="text-gray-500 text-center py-8">No contributions found</p>
@@ -135,7 +135,7 @@
                             </div>
                             <div class="text-right">
                                 <p class="font-semibold {{ $transaction['category_type'] === 'income' ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ $transaction['category_type'] === 'income' ? '+' : '-' }}${{ number_format($transaction['amount'], 2) }}
+                                    {{ $transaction['category_type'] === 'income' ? '+' : '-' }}₦{{ number_format($transaction['amount'], 2) }}
                                 </p>
                             </div>
                         </div>

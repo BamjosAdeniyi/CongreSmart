@@ -75,7 +75,7 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $member->age }}
+                                        {{ $member->age ?? 'N/A' }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
                                         <div>

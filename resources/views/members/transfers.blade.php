@@ -13,6 +13,19 @@
             </button>
         </div>
 
+        @if (session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Success!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+        @if (session('info'))
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Info!</strong>
+                <span class="block sm:inline">{{ session('info') }}</span>
+            </div>
+        @endif
+
         {{-- Transfer Requests --}}
         <div class="bg-white rounded-xl border border-gray-200">
             <div class="p-6 border-b border-gray-200">
@@ -143,33 +156,74 @@
     </div>
 
     <script>
-        function openTransferModal() {
-            document.getElementById('transferModal').classList.remove('hidden');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const transferModal = document.getElementById('transferModal');
+            const transferForm = document.getElementById('transferForm');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        function closeTransferModal() {
-            document.getElementById('transferModal').classList.add('hidden');
-        }
-
-        function approveTransfer(memberId) {
-            if (confirm('Are you sure you want to approve this transfer?')) {
-                // Implement approval logic
-                alert('Transfer approved for member: ' + memberId);
+            window.openTransferModal = function() {
+                transferModal.classList.remove('hidden');
             }
-        }
 
-        function rejectTransfer(memberId) {
-            if (confirm('Are you sure you want to reject this transfer?')) {
-                // Implement rejection logic
-                alert('Transfer rejected for member: ' + memberId);
+            window.closeTransferModal = function() {
+                transferModal.classList.add('hidden');
             }
-        }
 
-        document.getElementById('transferForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Implement form submission
-            alert('Transfer request submitted');
-            closeTransferModal();
+            // This part handles the form submission for initiating a transfer
+            transferForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const memberId = formData.get('member_id');
+                const transferType = formData.get('transfer_type');
+                const reason = formData.get('reason');
+
+                if (!memberId || !transferType) {
+                    alert('Please select a member and transfer type.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('{{ route('members.transfer') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            member_id: memberId,
+                            transfer_type: transferType,
+                            reason: reason
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert(data.message || 'Transfer request submitted successfully!');
+                        closeTransferModal();
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Failed to submit transfer request.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred during transfer submission.');
+                }
+            });
+
+            window.approveTransfer = function(memberId) {
+                if (confirm('Are you sure you want to approve this transfer?')) {
+                    // Implement approval logic - currently not in scope, just an alert
+                    alert('Approval logic for member: ' + memberId + ' needs to be implemented.');
+                }
+            }
+
+            window.rejectTransfer = function(memberId) {
+                if (confirm('Are you sure you want to reject this transfer?')) {
+                    // Implement rejection logic - currently not in scope, just an alert
+                    alert('Rejection logic for member: ' + memberId + ' needs to be implemented.');
+                }
+            }
         });
-    </script>
-</x-app-layout>

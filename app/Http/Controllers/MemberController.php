@@ -123,12 +123,39 @@ class MemberController extends Controller
     {
         // Check if user has permission to delete
         if (!in_array(Auth::user()->role, ['clerk', 'ict'])) {
-            abort(403, 'Unauthorized action.');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         $member->delete();
 
         return redirect()->route('members.index')
                         ->with('success', 'Member deleted successfully.');
+    }
+
+    /**
+     * Handle member transfer.
+     */
+    public function transfer(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|uuid|exists:members,member_id',
+            'transfer_type' => 'required|string|in:class,church',
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        $member = Member::where('member_id', $request->member_id)->firstOrFail();
+
+        // Only update status if transferring to another church
+        if ($request->transfer_type === 'church') {
+            $member->update([
+                'membership_status' => 'transferred',
+                'updated_by' => Auth::id(),
+            ]);
+            return response()->json(['message' => 'Member successfully transferred to another church.', 'status' => 'success']);
+        } else {
+            // For 'Between Classes' transfer, we might need a different logic
+            // For now, it will just show a success message without changing status
+            return response()->json(['message' => 'Member transfer request (between classes) submitted.', 'status' => 'info']);
+        }
     }
 }

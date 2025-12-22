@@ -147,7 +147,7 @@
                                 @php
                                     $totalContributions = $member->contributions->sum('amount');
                                 @endphp
-                                ${{ number_format($totalContributions, 2) }}
+                                ₦{{ number_format($totalContributions, 2) }}
                             </p>
                         </div>
                     </div>

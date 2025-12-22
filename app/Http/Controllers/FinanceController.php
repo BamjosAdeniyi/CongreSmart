@@ -30,7 +30,23 @@ class FinanceController extends Controller
     /**
      * Show the contributions form.
      */
-    public function contributions()
+    public function listContributions()
+    {
+        $members = Member::where('membership_status', 'active')
+            ->orderBy('first_name')
+            ->get();
+
+        $categories = FinancialCategory::where('active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('finance.contributions', compact('members', 'categories'));
+    }
+
+    /**
+     * Show the form for creating a new contribution.
+     */
+    public function createContribution()
     {
         $members = Member::where('membership_status', 'active')
             ->orderBy('first_name')

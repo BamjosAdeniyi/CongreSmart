@@ -33,7 +33,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Contributions</p>
-                        <p class="text-2xl font-bold text-green-600">${{ number_format($stats['total_contributions'], 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600">₦{{ number_format($stats['total_contributions'], 2) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

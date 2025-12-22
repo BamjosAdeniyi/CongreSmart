@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transfers', function () {
             return view('members.transfers');
         })->name('transfers');
+        Route::post('/transfer', [App\Http\Controllers\MemberController::class, 'transfer'])->name('transfer');
     });
 
     // Sabbath School Routes
@@ -117,7 +118,8 @@ Route::middleware(['auth'])->group(function () {
     // Finance Routes
     Route::prefix('finance')->name('finance.')->controller(App\Http\Controllers\FinanceController::class)->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/contributions', 'contributions')->name('contributions');
+        Route::get('/contributions', 'listContributions')->name('contributions');
+        Route::get('/contributions/create', 'createContribution')->name('contributions.create');
         Route::post('/contributions', 'storeContributions')->name('contributions.store');
         Route::get('/categories', 'categories')->name('categories');
         Route::post('/categories', 'storeCategory')->name('categories.store');

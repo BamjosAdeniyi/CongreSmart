@@ -118,7 +118,7 @@
                                     </td>
                                     <td class="py-4 px-4 text-gray-600">{{ ucfirst($member->gender ?? 'N/A') }}</td>
                                     <td class="py-4 px-4 text-gray-600">
-                                        {{ $member->date_of_birth ? max(0, now()->diffInYears($member->date_of_birth)) : 'N/A' }}
+                                        {{ $member->age ?? 'N/A' }}
                                     </td>
                                     <td class="py-4 px-4">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium

@@ -13,7 +13,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Contributions</p>
-                        <p class="text-2xl font-bold text-green-600">${{ number_format($totalContributions, 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600">₦{{ number_format($totalContributions, 2) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">This Month</p>
-                        <p class="text-2xl font-bold text-blue-600">${{ number_format($monthlyContributions, 2) }}</p>
+                        <p class="text-2xl font-bold text-blue-600">₦{{ number_format($monthlyContributions, 2) }}</p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@
         <div class="bg-white rounded-xl border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a href="{{ route('contributions.create') }}"
+                <a href="{{ route('finance.contributions.create') }}"
                    class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div class="p-2 bg-green-100 rounded-lg mr-3">
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('contributions.index') }}"
+                <a href="{{ route('finance.reports') }}"
                    class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div class="p-2 bg-blue-100 rounded-lg mr-3">
                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('financial-categories.index') }}"
+                <a href="{{ route('finance.categories') }}"
                    class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div class="p-2 bg-purple-100 rounded-lg mr-3">
                         <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
         <div class="bg-white rounded-xl border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900">Recent Contributions</h2>
-                <a href="{{ route('contributions.index') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                <a href="{{ route('finance.contributions') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
                     View All
                 </a>
             </div>
@@ -141,7 +141,7 @@
                             <p class="text-sm text-gray-600">{{ $contribution->category->name }} - {{ $contribution->date->format('M j, Y') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="font-semibold text-gray-900">${{ number_format($contribution->amount, 2) }}</p>
+                            <p class="font-semibold text-gray-900">₦{{ number_format($contribution->amount, 2) }}</p>
                             <p class="text-sm text-gray-600">{{ $contribution->payment_method }}</p>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                             <h3 class="font-medium text-gray-900">{{ $category->name }}</h3>
                             <span class="text-sm text-gray-600">{{ $category->contributions_count }} contributions</span>
                         </div>
-                        <p class="text-2xl font-bold text-green-600">${{ number_format($category->total_amount, 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600">₦{{ number_format($category->total_amount, 2) }}</p>
                         <p class="text-sm text-gray-600">{{ $category->description ?? 'No description' }}</p>
                     </div>
                 @empty

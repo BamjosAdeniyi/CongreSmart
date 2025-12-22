@@ -18,7 +18,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Income</p>
-                        <p class="text-2xl font-bold text-green-600">${{ number_format($financialStats['total_income'], 2) }}</p>
+                        <p class="text-2xl font-bold text-green-600">₦{{ number_format($financialStats['total_income'], 2) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Expenses</p>
-                        <p class="text-2xl font-bold text-red-600">${{ number_format($financialStats['total_expenses'], 2) }}</p>
+                        <p class="text-2xl font-bold text-red-600">₦{{ number_format($financialStats['total_expenses'], 2) }}</p>
                     </div>
                     <div class="p-3 bg-red-100 rounded-lg">
                         <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
                     <div>
                         <p class="text-sm font-medium text-gray-600">Net Balance</p>
                         <p class="text-2xl font-bold {{ $financialStats['net_balance'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                            ${{ number_format(abs($financialStats['net_balance']), 2) }}
+                            ₦{{ number_format(abs($financialStats['net_balance']), 2) }}
                         </p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -62,7 +62,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">This Month</p>
-                        <p class="text-2xl font-bold text-purple-600">${{ number_format($financialStats['this_month_income'], 2) }}</p>
+                        <p class="text-2xl font-bold text-purple-600">₦{{ number_format($financialStats['this_month_income'], 2) }}</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="font-semibold">${{ number_format($category['total'], 2) }}</div>
+                                <div class="font-semibold">₦{{ number_format($category['total'], 2) }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -134,7 +134,7 @@
                                 @foreach($contributions->take(20) as $contribution)
                                     <tr class="hover:bg-gray-50">
                                         <td class="py-4 px-4 text-gray-600">
-                                            {{ $contribution->contribution_date->format('M j, Y') }}
+                                            {{ $contribution->contribution_date?->format('M j, Y') ?? 'N/A' }}
                                         </td>
                                         <td class="py-4 px-4">
                                             <div class="font-medium text-gray-900">
@@ -151,7 +151,7 @@
                                             </span>
                                         </td>
                                         <td class="py-4 px-4 text-right font-semibold">
-                                            ${{ number_format($contribution->amount, 2) }}
+                                            ₦{{ number_format($contribution->amount, 2) }}
                                         </td>
                                     </tr>
                                 @endforeach

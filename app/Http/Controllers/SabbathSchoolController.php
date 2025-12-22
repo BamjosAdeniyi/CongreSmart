@@ -14,8 +14,12 @@ class SabbathSchoolController extends Controller
 {
     public function index()
     {
-        $query = SabbathSchoolClass::with(['coordinator', 'members'])
-            ->withCount('members');
+        $query = SabbathSchoolClass::with(['coordinator', 'members' => function($q) {
+                $q->where('membership_status', '!=', 'transferred');
+            }])
+            ->withCount(['members' => function($q) {
+                $q->where('membership_status', '!=', 'transferred');
+            }]);
 
         // If user is coordinator, only show their class
         if (Auth::user()->role === 'coordinator') {
@@ -24,7 +28,7 @@ class SabbathSchoolController extends Controller
 
         $classes = $query->orderBy('name')->get();
 
-        $totalMembers = Member::count();
+        $totalMembers = Member::where('membership_status', '!=', 'transferred')->count();
         $totalAttendance = AttendanceRecord::whereDate('date', today())->count();
 
         // Get coordinators for modal (only for superintendent)
@@ -43,7 +47,7 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent can create classes
         if (Auth::user()->role !== 'superintendent') {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         $coordinators = \App\Models\User::where('role', 'coordinator')
@@ -85,10 +89,12 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can view
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
-        $class->load(['coordinator', 'members', 'attendance']);
+        $class->load(['coordinator', 'members' => function($q) {
+            $q->where('membership_status', '!=', 'transferred');
+        }, 'attendance']);
 
         $attendanceStats = [
             'total_sessions' => $class->attendance()->distinct('date')->count(),
@@ -103,7 +109,7 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can edit
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         $coordinators = \App\Models\User::where('role', 'coordinator')
@@ -145,7 +151,7 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent can delete classes
         if (Auth::user()->role !== 'superintendent') {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         // Check if class has members
@@ -163,10 +169,10 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can take attendance
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
-        $members = $class->members()->orderBy('first_name')->get();
+        $members = $class->members()->where('membership_status', '!=', 'transferred')->orderBy('first_name')->get();
         $today = today();
 
         // Check if attendance already taken today
@@ -181,7 +187,7 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can store attendance
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         $validator = Validator::make($request->all(), [
@@ -201,8 +207,8 @@ class SabbathSchoolController extends Controller
                 ->whereDate('date', $request->date)
                 ->delete();
 
-            // Get all members in the class
-            $classMembers = $class->members()->pluck('member_id')->toArray();
+            // Get all members in the class, excluding transferred ones
+            $classMembers = $class->members()->where('membership_status', '!=', 'transferred')->pluck('member_id')->toArray();
 
             // Record attendance for each member
             foreach ($classMembers as $memberId) {
@@ -228,16 +234,17 @@ class SabbathSchoolController extends Controller
 
         $reports = $classes->map(function ($class) {
             $attendanceRecords = $class->attendance;
-            $totalSessions = $attendanceRecords->distinct('date')->count();
+            $totalSessions = $attendanceRecords->unique('date')->count();
             $averageAttendance = $totalSessions > 0 ? round($attendanceRecords->where('present', true)->count() / $totalSessions, 1) : 0;
-            $totalAttendance = $attendanceRecords->sum('present_count');
+            $totalPresentMembers = $attendanceRecords->where('present', true)->count();
 
             return [
                 'class' => $class,
                 'total_sessions' => $totalSessions,
                 'average_attendance' => $averageAttendance,
-                'total_attendance' => $totalAttendance,
-                'attendance_rate' => $totalSessions > 0 ? round(($totalAttendance / ($totalSessions * $class->members()->count())) * 100, 1) : 0,
+                'total_attendance' => $totalPresentMembers, // Corrected from 'present_count'
+                'attendance_rate' => ($totalSessions > 0 && $class->members()->where('membership_status', '!=', 'transferred')->count() > 0) ?
+                    round(($totalPresentMembers / ($totalSessions * $class->members()->where('membership_status', '!=', 'transferred')->count())) * 100, 1) : 0,
             ];
         });
 
@@ -248,12 +255,15 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can assign members
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
-        $assignedMembers = $class->members;
-        $availableMembers = Member::where('sabbath_school_class_id', '!=', $class->id)
-            ->orWhereNull('sabbath_school_class_id')
+        $assignedMembers = $class->members()->where('membership_status', '!=', 'transferred')->get();
+        $availableMembers = Member::where('membership_status', '!=', 'transferred') // Exclude transferred members
+            ->where(function ($query) use ($class) {
+                $query->where('sabbath_school_class_id', '!=', $class->id)
+                      ->orWhereNull('sabbath_school_class_id');
+            })
             ->orderBy('first_name')
             ->get();
 
@@ -264,7 +274,7 @@ class SabbathSchoolController extends Controller
     {
         // Only superintendent or the class coordinator can update assignments
         if (Auth::user()->role !== 'superintendent' && $class->coordinator_id !== Auth::id()) {
-            abort(403, 'Unauthorized');
+            abort(403, 'You are not authorized to perform this action.');
         }
 
         $validator = Validator::make($request->all(), [
