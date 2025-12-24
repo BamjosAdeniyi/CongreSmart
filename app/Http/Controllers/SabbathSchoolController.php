@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class SabbathSchoolController extends Controller
 {
@@ -36,7 +37,7 @@ class SabbathSchoolController extends Controller
         if (Auth::user()->role === 'superintendent') {
             $coordinators = \App\Models\User::where('role', 'coordinator')
                 ->where('active', true)
-                ->orderBy('name')
+                ->orderBy('first_name')
                 ->get();
         }
 
@@ -52,7 +53,7 @@ class SabbathSchoolController extends Controller
 
         $coordinators = \App\Models\User::where('role', 'coordinator')
             ->where('active', true)
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
 
         return view('sabbath-school.create', compact('coordinators'));
@@ -72,7 +73,7 @@ class SabbathSchoolController extends Controller
 
         DB::transaction(function () use ($request) {
             SabbathSchoolClass::create([
-                'id' => (string) \Illuminate\Support\Str::uuid(),
+                'id' => (string) Str::uuid(),
                 'name' => $request->name,
                 'description' => $request->description,
                 'coordinator_id' => $request->coordinator_id,
@@ -114,7 +115,7 @@ class SabbathSchoolController extends Controller
 
         $coordinators = \App\Models\User::where('role', 'coordinator')
             ->where('active', true)
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
 
         return view('sabbath-school.edit', compact('class', 'coordinators'));
@@ -213,7 +214,7 @@ class SabbathSchoolController extends Controller
             // Record attendance for each member
             foreach ($classMembers as $memberId) {
                 AttendanceRecord::create([
-                    'id' => (string) \Illuminate\Support\Str::uuid(),
+                    'id' => (string) Str::uuid(),
                     'member_id' => $memberId,
                     'class_id' => $class->id,
                     'date' => $request->date,

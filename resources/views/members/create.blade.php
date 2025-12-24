@@ -244,19 +244,39 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="membership_date" class="text-sm font-medium">Membership Date <span class="text-red-500">*</span></label>
-                        <input
-                            id="membership_date"
-                            name="membership_date"
-                            type="date"
-                            value="{{ old('membership_date') }}"
-                            class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
-                            required
-                        />
-                        @error('membership_date')
-                            <p class="text-red-600 text-xs">{{ $message }}</p>
-                        @enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="sabbath_school_class_id" class="text-sm font-medium">Sabbath School Class</label>
+                            <select
+                                id="sabbath_school_class_id"
+                                name="sabbath_school_class_id"
+                                class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
+                            >
+                                <option value="">No Class</option>
+                                @foreach($sabbathClasses as $class)
+                                    <option value="{{ $class->id }}" {{ old('sabbath_school_class_id') == $class->id ? 'selected' : '' }}>
+                                        {{ $class->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('sabbath_school_class_id')
+                                <p class="text-red-600 text-xs">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="space-y-2">
+                            <label for="membership_date" class="text-sm font-medium">Membership Date <span class="text-red-500">*</span></label>
+                            <input
+                                id="membership_date"
+                                name="membership_date"
+                                type="date"
+                                value="{{ old('membership_date') }}"
+                                class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
+                                required
+                            />
+                            @error('membership_date')
+                                <p class="text-red-600 text-xs">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>

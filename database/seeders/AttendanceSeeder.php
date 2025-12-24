@@ -13,22 +13,28 @@ class AttendanceSeeder extends Seeder
 {
     public function run(): void
     {
-        $members = Member::take(8)->pluck('member_id')->toArray();
-        $classes = SabbathSchoolClass::pluck('id')->toArray();
-        $user = null; // optional: you can set recorded_by to a seeded user id if you wish
+        $members = Member::all();
+        $classes = SabbathSchoolClass::all();
+        $users = \App\Models\User::all();
 
-        // create 4 weekly attendances for each member (some present, some absent)
-        for ($week = 0; $week < 4; $week++) {
-            $date = Carbon::now()->subWeeks($week)->next(\Carbon\Carbon::SATURDAY)->toDateString();
-            foreach ($members as $i => $memberId) {
+        if ($classes->isEmpty()) return;
+
+        // create 8 weekly attendances for each member (some present, some absent)
+        for ($week = 0; $week < 8; $week++) {
+            $date = Carbon::now()->subWeeks($week)->previous(Carbon::SATURDAY)->toDateString();
+
+            foreach ($members as $member) {
+                // Member must have a class to have attendance recorded easily in this seeder
+                $classId = $member->sabbath_school_class_id ?? $classes->random()->id;
+
                 AttendanceRecord::create([
                     'id' => (string) Str::uuid(),
-                    'member_id' => $memberId,
-                    'class_id' => $classes[$i % count($classes)] ?? null,
+                    'member_id' => $member->member_id,
+                    'class_id' => $classId,
                     'date' => $date,
-                    'present' => ($i + $week) % 3 !== 0,
+                    'present' => rand(0, 10) > 2, // 80% attendance rate
                     'notes' => null,
-                    'marked_by' => null,
+                    'marked_by' => $users->random()->id,
                 ]);
             }
         }

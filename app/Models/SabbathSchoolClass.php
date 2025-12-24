@@ -3,18 +3,19 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasTracking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SabbathSchoolClass extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasTracking;
 
     protected $table = 'sabbath_school_classes';
 
     protected $fillable = [
         'id', 'name', 'description', 'coordinator_id',
-        'age_range', 'active'
+        'age_range', 'active', 'created_by', 'updated_by'
     ];
 
     protected $casts = [

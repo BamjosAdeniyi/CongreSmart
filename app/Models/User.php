@@ -12,7 +12,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasUuid;
 
     protected $fillable = [
-        'id', 'name', 'email', 'password', 'role',
+        'id', 'first_name', 'last_name', 'email', 'password', 'role',
         'avatar', 'active', 'last_login',
     ];
 
@@ -25,6 +25,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'last_login' => 'datetime',
     ];
+
+    /* -----------------------
+       Accessors
+    ------------------------*/
+
+    public function getNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     /* -----------------------
        Relationships

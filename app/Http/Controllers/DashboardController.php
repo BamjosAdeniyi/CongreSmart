@@ -330,10 +330,20 @@ SQL;
                         ->get();
         });
 
+        // Define placeholder variables
+        $activeCases = 0;
+        $membersHelped = 0;
+        $assistanceTypes = 0;
+        $monthlyAssistance = 0;
+
         return view('dashboards.welfare', compact(
             'totalMembers',
             'activeMembers',
-            'potentialWelfareCases'
+            'potentialWelfareCases',
+            'activeCases',
+            'membersHelped',
+            'assistanceTypes',
+            'monthlyAssistance'
         ));
     }
 

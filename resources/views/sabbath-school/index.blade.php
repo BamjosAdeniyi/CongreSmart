@@ -83,7 +83,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            <span>{{ $class->coordinator?->name ?? 'N/A' }}</span>
+                            <span>{{ $class->coordinator?->first_name ?? 'N/A' }} {{ $class->coordinator?->last_name ?? '' }}</span>
                         </div>
 
                         <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -113,8 +113,12 @@
 
                     <div class="flex gap-2 mt-4">
                         @if(Auth::user()->role === 'superintendent')
-                            <button onclick="openEditModal({{ $class->id }}, '{{ addslashes($class->name) }}', '{{ addslashes($class->description ?? '') }}', {{ $class->coordinator_id ?? 'null' }})"
-                                    class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
+                            <button data-class-id="{{ $class->id }}"
+                                    data-class-name="{{ addslashes($class->name) }}"
+                                    data-class-description="{{ addslashes($class->description ?? '') }}"
+                                    data-coordinator-id="{{ $class->coordinator_id ?? 'null' }}"
+                                    onclick="openEditModal(this.dataset.classId, this.dataset.className, this.dataset.classDescription, this.dataset.coordinatorId)"
+                                    class="edit-class-btn bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
                                 Edit
                             </button>
                             <a href="{{ route('sabbath-school.show', $class) }}"
@@ -198,7 +202,7 @@
                                 <option value="">Select a coordinator</option>
                                 @foreach($coordinators as $coordinator)
                                     <option value="{{ $coordinator->id }}" {{ old('coordinator_id') == $coordinator->id ? 'selected' : '' }}>
-                                        {{ $coordinator->name }}
+                                        {{ $coordinator->first_name }} {{ $coordinator->last_name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -262,7 +266,7 @@
                                 <option value="">Select a coordinator</option>
                                 @foreach($coordinators as $coordinator)
                                     <option value="{{ $coordinator->id }}">
-                                        {{ $coordinator->name }}
+                                        {{ $coordinator->first_name }} {{ $coordinator->last_name }}
                                     </option>
                                 @endforeach
                             </select>

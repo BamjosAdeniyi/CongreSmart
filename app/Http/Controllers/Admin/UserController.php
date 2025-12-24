@@ -24,7 +24,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'role' => 'required|string|in:pastor,clerk,superintendent,coordinator,financial,ict,welfare',
             'active' => 'boolean'
@@ -36,7 +37,8 @@ class UserController extends Controller
 
         User::create([
             'id' => (string) Str::uuid(),
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make('password123'), // Default password
             'role' => $request->role,
@@ -59,7 +61,8 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string|in:pastor,clerk,superintendent,coordinator,financial,ict,welfare',
             'active' => 'boolean'
@@ -70,7 +73,8 @@ class UserController extends Controller
         }
 
         $user->update([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
             'active' => $request->active ?? false,

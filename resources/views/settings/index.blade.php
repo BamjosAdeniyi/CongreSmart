@@ -42,9 +42,14 @@
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                        <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror" required>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('first_name') border-red-500 @enderror" required>
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('last_name') border-red-500 @enderror" required>
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>

@@ -168,7 +168,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Attendance Trend Chart
     const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
-    const attendanceData = @json($attendanceTrend ?? []);
+    const attendanceData = {!! json_encode($attendanceTrend ?? []) !!};
     
     new Chart(attendanceCtx, {
         type: 'line',
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Financial Breakdown Chart
     const financialCtx = document.getElementById('financialChart').getContext('2d');
-    const financialData = @json($financialBreakdown ?? []);
+    const financialData = {!! json_encode($financialBreakdown ?? []) !!};
     
     new Chart(financialCtx, {
         type: 'doughnut',

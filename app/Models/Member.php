@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasTracking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Member extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasTracking;
 
     protected $primaryKey = 'member_id';
     public $incrementing = false;
@@ -24,6 +25,17 @@ class Member extends Model
         'active_disciplinary_record_id',
         'created_by', 'updated_by'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($member) {
+            if ($member->baptism_status === 'baptized' && empty($member->date_of_baptism)) {
+                $member->date_of_baptism = $member->membership_date;
+            }
+        });
+    }
 
     protected $casts = [
         'date_of_birth' => 'date',

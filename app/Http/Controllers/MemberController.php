@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberStoreRequest;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Requests\MemberUpdateRequest;
 use App\Models\Member;
 use App\Models\SabbathSchoolClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+
+use App\Models\MemberTransfer;
+use Illuminate\Support\Facades\DB;
 
 class MemberController extends Controller
 {
@@ -56,17 +60,15 @@ class MemberController extends Controller
     {
         $validated = $request->validated();
 
-        // Generate UUID for member_id
-        $validated['member_id'] = (string) Str::uuid();
-        $validated['created_by'] = Auth::id();
-        $validated['updated_by'] = Auth::id();
+        $member = Member::create($validated);
 
-        // Ensure date_of_baptism is set if baptized
-        if ($validated['baptism_status'] === 'baptized' && empty($validated['date_of_baptism'])) {
-            $validated['date_of_baptism'] = $validated['membership_date'];
-        }
-
-        Member::create($validated);
+        NotificationsController::notify(
+            'New Member Registered',
+            "{$member->full_name} has been successfully added to the system by " . Auth::user()->name . ".",
+            'success',
+            null,
+            route('members.show', $member)
+        );
 
         return redirect()->route('members.index')
                         ->with('success', 'Member created successfully.');
@@ -101,16 +103,15 @@ class MemberController extends Controller
      */
     public function update(MemberUpdateRequest $request, Member $member)
     {
-        $validated = $request->validated();
+        $member->update($request->validated());
 
-        $validated['updated_by'] = Auth::id();
-
-        // Ensure date_of_baptism is set if baptized
-        if ($validated['baptism_status'] === 'baptized' && empty($validated['date_of_baptism'])) {
-            $validated['date_of_baptism'] = $validated['membership_date'];
-        }
-
-        $member->update($validated);
+        NotificationsController::notify(
+            'Member Record Updated',
+            "The details for {$member->full_name} have been updated by " . Auth::user()->name . ".",
+            'info',
+            null,
+            route('members.show', $member)
+        );
 
         return redirect()->route('members.show', $member)
                         ->with('success', 'Member updated successfully.');
@@ -140,22 +141,93 @@ class MemberController extends Controller
         $request->validate([
             'member_id' => 'required|uuid|exists:members,member_id',
             'transfer_type' => 'required|string|in:class,church',
+            'direction' => 'required|string|in:from,to',
+            'church_name' => 'nullable|string|max:255',
+            'to_class_id' => 'nullable|exists:sabbath_school_classes,id',
+            'transfer_date' => 'required|date',
             'reason' => 'nullable|string|max:1000',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         $member = Member::where('member_id', $request->member_id)->firstOrFail();
 
-        // Only update status if transferring to another church
-        if ($request->transfer_type === 'church') {
-            $member->update([
-                'membership_status' => 'transferred',
-                'updated_by' => Auth::id(),
+        DB::beginTransaction();
+        try {
+            $transfer = MemberTransfer::create([
+                'member_id' => $member->member_id,
+                'transfer_type' => $request->transfer_type,
+                'status' => 'pending', // By default pending
+                'direction' => $request->direction,
+                'church_name' => $request->church_name,
+                'from_class_id' => $member->sabbath_school_class_id,
+                'to_class_id' => $request->to_class_id,
+                'transfer_date' => $request->transfer_date,
+                'reason' => $request->reason,
+                'notes' => $request->notes,
+                'processed_by' => Auth::id(),
             ]);
-            return response()->json(['message' => 'Member successfully transferred to another church.', 'status' => 'success']);
-        } else {
-            // For 'Between Classes' transfer, we might need a different logic
-            // For now, it will just show a success message without changing status
-            return response()->json(['message' => 'Member transfer request (between classes) submitted.', 'status' => 'info']);
+
+            // Auto-complete if it's just a class transfer for now, or if directed by business logic
+            if ($request->transfer_type === 'class') {
+                $transfer->update(['status' => 'completed']);
+                $member->update(['sabbath_school_class_id' => $request->to_class_id]);
+                DB::commit();
+                return response()->json(['message' => 'Member successfully transferred between classes.', 'status' => 'success']);
+            }
+
+            // For church transfers, we keep it pending until approved (as per the prototype/current UI)
+            NotificationsController::notify(
+                'New Transfer Request',
+                "A church transfer has been requested for {$member->full_name} by " . Auth::user()->name . ".",
+                'warning',
+                null,
+                route('members.transfers')
+            );
+            DB::commit();
+            return response()->json(['message' => 'Transfer request submitted and is pending approval.', 'status' => 'info']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to process transfer: ' . $e->getMessage(), 'status' => 'error'], 500);
+        }
+    }
+
+    /**
+     * Approve or reject a member transfer.
+     */
+    public function updateTransfer(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:completed,rejected',
+        ]);
+
+        $transfer = MemberTransfer::findOrFail($id);
+        $member = $transfer->member;
+
+        DB::beginTransaction();
+        try {
+            $transfer->update([
+                'status' => $request->status,
+                'processed_by' => Auth::id(),
+            ]);
+
+            if ($request->status === 'completed') {
+                if ($transfer->transfer_type === 'church') {
+                    if ($transfer->direction === 'to') {
+                        $member->update(['membership_status' => 'transferred']);
+                    } else {
+                        $member->update(['membership_status' => 'active']);
+                    }
+                } else {
+                    $member->update(['sabbath_school_class_id' => $transfer->to_class_id]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Transfer request ' . $request->status . ' successfully.', 'status' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to update transfer: ' . $e->getMessage(), 'status' => 'error'], 500);
         }
     }
 }

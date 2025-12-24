@@ -193,7 +193,7 @@
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_description').value = description;
             document.getElementById('edit_type').value = type;
-            document.getElementById('edit_active').checked = active;
+            document.getElementById('edit_active').checked = active === 'true';
             document.getElementById('editModal').classList.remove('hidden');
         }
 

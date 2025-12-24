@@ -13,22 +13,28 @@ class ContributionsSeeder extends Seeder
 {
     public function run(): void
     {
-        $members = Member::take(6)->pluck('member_id')->toArray();
-        $categories = FinancialCategory::pluck('id')->toArray();
-        $now = Carbon::now();
+        $members = Member::all();
+        $categories = FinancialCategory::all();
+        $users = \App\Models\User::all();
 
-        foreach ($members as $i => $mId) {
-            Contribution::create([
-                'id' => (string) Str::uuid(),
-                'member_id' => $mId,
-                'category_id' => $categories[$i % count($categories)],
-                'amount' => 1000 + ($i * 250),
-                'date' => $now->copy()->subDays($i * 7)->toDateString(),
-                'payment_method' => 'cash',
-                'reference_number' => 'REF' . strtoupper(substr((string) Str::uuid(), 0, 8)),
-                'notes' => null,
-                'recorded_by' => null,
-            ]);
+        if ($categories->isEmpty()) return;
+
+        foreach ($members as $member) {
+            // Each member makes 1-5 contributions
+            $numContributions = rand(1, 5);
+            for ($j = 0; $j < $numContributions; $j++) {
+                Contribution::create([
+                    'id' => (string) Str::uuid(),
+                    'member_id' => $member->member_id,
+                    'category_id' => $categories->random()->id,
+                    'amount' => rand(5, 50) * 100, // 500 to 5000
+                    'date' => Carbon::now()->subDays(rand(0, 90))->toDateString(),
+                    'payment_method' => rand(0, 1) ? 'cash' : 'transfer',
+                    'reference_number' => 'REF' . strtoupper(substr((string) Str::uuid(), 0, 8)),
+                    'notes' => null,
+                    'recorded_by' => $users->random()->id,
+                ]);
+            }
         }
     }
 }

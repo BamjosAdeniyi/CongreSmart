@@ -14,6 +14,9 @@
     ];
     $userRoleLabel = $roleLabels[$user->role ?? 'pastor'] ?? 'User';
 
+    // Get display name
+    $displayName = $user->role === 'pastor' ? 'Pastor ' . $user->first_name : $user->first_name;
+
     // Get unread notification count
     $notificationCount = \App\Http\Controllers\NotificationsController::getUnreadCount();
 @endphp
@@ -27,7 +30,7 @@
             </svg>
         </button>
         <div>
-            <h2 class="text-base md:text-lg text-gray-800">Welcome, {{ explode(' ', $user->name)[0] }}!</h2>
+            <h2 class="text-base md:text-lg text-gray-800">Welcome, {{ $displayName }}!</h2>
             <p class="text-xs md:text-sm text-gray-500 hidden sm:block">{{ $userRoleLabel }}</p>
         </div>
     </div>
@@ -62,14 +65,14 @@
                         <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-6 h-6 object-contain" />
                     @endif
                 </div>
-                <span class="hidden sm:inline text-sm font-medium">{{ $user->name }}</span>
+                <span class="hidden sm:inline text-sm font-medium">{{ $displayName }}</span>
                 <svg class="w-4 h-4 hidden sm:inline text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
             {{-- Dropdown Menu --}}
-            <div x-show="open" 
+            <div x-show="open"
                  @click.away="open = false"
                  x-transition:enter="transition ease-out duration-100"
                  x-transition:enter-start="transform opacity-0 scale-95"
@@ -110,4 +113,3 @@
 </header>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-

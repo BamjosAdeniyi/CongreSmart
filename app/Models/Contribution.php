@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasTracking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contribution extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasTracking;
 
     protected $fillable = [
         'id', 'member_id', 'category_id', 'amount',
         'date', 'payment_method', 'reference_number',
-        'notes', 'recorded_by'
+        'notes', 'recorded_by', 'updated_by'
     ];
 
     protected $casts = [

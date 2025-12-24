@@ -31,7 +31,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse(\App\Models\User::orderBy('name')->get() as $user)
+                        @forelse(\App\Models\User::orderBy('first_name')->get() as $user)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
@@ -62,10 +62,18 @@
                                     {{ $user->created_at->format('M d, Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button onclick="openEditModal('{{ $user->id }}', '{{ addslashes($user->name) }}', '{{ $user->email }}', '{{ $user->role }}', {{ $user->active ? 'true' : 'false' }})"
+                                    <button data-user-id="{{ $user->id }}"
+                                            data-user-first-name="{{ addslashes($user->first_name) }}"
+                                            data-user-last-name="{{ addslashes($user->last_name) }}"
+                                            data-user-email="{{ $user->email }}"
+                                            data-user-role="{{ $user->role }}"
+                                            data-user-active="{{ $user->active ? 'true' : 'false' }}"
+                                            onclick="openEditModal(this.dataset.userId, this.dataset.userFirstName, this.dataset.userLastName, this.dataset.userEmail, this.dataset.userRole, this.dataset.userActive)"
                                             class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
                                     @if($user->id !== auth()->id())
-                                        <button onclick="confirmDelete({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                        <button data-user-id="{{ $user->id }}"
+                                                data-user-name="{{ addslashes($user->name) }}"
+                                                onclick="confirmDelete(this.dataset.userId, this.dataset.userName)"
                                                 class="text-red-600 hover:text-red-900">Delete</button>
                                     @endif
                                 </td>
@@ -101,8 +109,14 @@
                         @csrf
 
                         <div>
-                            <label for="create_name" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" id="create_name" name="name" required
+                            <label for="create_first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input type="text" id="create_first_name" name="first_name" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="create_last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                            <input type="text" id="create_last_name" name="last_name" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
@@ -168,8 +182,14 @@
                         @method('PUT')
 
                         <div>
-                            <label for="edit_name" class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
-                            <input type="text" id="edit_name" name="name" required
+                            <label for="edit_first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input type="text" id="edit_first_name" name="first_name" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="edit_last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                            <input type="text" id="edit_last_name" name="last_name" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
@@ -255,11 +275,12 @@
             document.getElementById('createModal').classList.add('hidden');
         }
 
-        function openEditModal(id, name, email, role, active) {
-            document.getElementById('edit_name').value = name;
+        function openEditModal(id, firstName, lastName, email, role, active) {
+            document.getElementById('edit_first_name').value = firstName;
+            document.getElementById('edit_last_name').value = lastName;
             document.getElementById('edit_email').value = email;
             document.getElementById('edit_role').value = role;
-            document.getElementById('edit_active').checked = active;
+            document.getElementById('edit_active').checked = active === 'true';
 
             document.getElementById('editForm').action = `/admin/users/${id}`;
             document.getElementById('editModal').classList.remove('hidden');

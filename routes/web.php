@@ -10,7 +10,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
         $role = $user->role ?? 'pastor';
-        
+
         // Map role to dashboard route
         $roleRoutes = [
             'pastor' => 'dashboard.pastor',
@@ -21,12 +21,12 @@ Route::get('/', function () {
             'welfare' => 'dashboard.welfare',
             'ict' => 'dashboard.ict',
         ];
-        
+
         $dashboardRoute = $roleRoutes[$role] ?? 'dashboard.pastor';
-        
+
         return redirect()->route($dashboardRoute);
     }
-    
+
     return view('landing');
 });
 
@@ -34,16 +34,16 @@ require __DIR__.'/auth.php';
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
-    
+
     // Dashboard Routes - Redirect to role-specific dashboard
     Route::get('/dashboard', function () {
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('login');
         }
-        
+
         $role = $user->role ?? 'pastor';
-        
+
         // Map role to dashboard route
         $roleRoutes = [
             'pastor' => 'dashboard.pastor',
@@ -54,9 +54,9 @@ Route::middleware(['auth'])->group(function () {
             'welfare' => 'dashboard.welfare',
             'ict' => 'dashboard.ict',
         ];
-        
+
         $dashboardRoute = $roleRoutes[$role] ?? 'dashboard.pastor';
-        
+
         try {
             return redirect()->route($dashboardRoute);
         } catch (\Exception $e) {
@@ -68,22 +68,22 @@ Route::middleware(['auth'])->group(function () {
     // Role-based dashboards
     Route::get('/dashboard/pastor', [DashboardController::class, 'pastor'])
         ->name('dashboard.pastor');
-    
+
     Route::get('/dashboard/clerk', [DashboardController::class, 'clerk'])
         ->name('dashboard.clerk');
-    
+
     Route::get('/dashboard/superintendent', [DashboardController::class, 'superintendent'])
         ->name('dashboard.superintendent');
-    
+
     Route::get('/dashboard/coordinator', [DashboardController::class, 'coordinator'])
         ->name('dashboard.coordinator');
-    
+
     Route::get('/dashboard/financial', [DashboardController::class, 'financial'])
         ->name('dashboard.financial');
-    
+
     Route::get('/dashboard/welfare', [DashboardController::class, 'welfare'])
         ->name('dashboard.welfare');
-    
+
     Route::get('/dashboard/ict', [DashboardController::class, 'ict'])
         ->name('dashboard.ict');
 
@@ -93,14 +93,15 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Members Routes
-    Route::resource('members', App\Http\Controllers\MemberController::class);
-
     Route::prefix('members')->name('members.')->group(function () {
         Route::get('/transfers', function () {
             return view('members.transfers');
         })->name('transfers');
         Route::post('/transfer', [App\Http\Controllers\MemberController::class, 'transfer'])->name('transfer');
+        Route::post('/transfer/{id}/update', [App\Http\Controllers\MemberController::class, 'updateTransfer'])->name('transfer.update');
     });
+
+    Route::resource('members', App\Http\Controllers\MemberController::class);
 
     // Sabbath School Routes
     Route::resource('sabbath-school', App\Http\Controllers\SabbathSchoolController::class)->parameters([
@@ -161,11 +162,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit')->middleware('role:ict');
         Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update')->middleware('role:ict');
         Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy')->middleware('role:ict');
-        
+
         Route::get('/permissions', function () {
             return view('admin.permissions');
         })->name('permissions')->middleware('role:ict');
-        
+
         Route::get('/logs', function () {
             return view('admin.logs');
         })->name('logs')->middleware('role:ict');

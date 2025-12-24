@@ -8,6 +8,7 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class FinanceController extends Controller
 {
@@ -82,6 +83,7 @@ class FinanceController extends Controller
 
                     if ($amount > 0) {
                         Contribution::create([
+                            'id' => (string) Str::uuid(),
                             'member_id' => $memberId,
                             'category_id' => $categoryId,
                             'amount' => $amount,
@@ -128,6 +130,7 @@ class FinanceController extends Controller
         ]);
 
         FinancialCategory::create([
+            'id' => (string) Str::uuid(),
             'name' => $request->name,
             'description' => $request->description,
             'category_type' => $request->category_type,

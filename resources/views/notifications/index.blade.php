@@ -64,22 +64,22 @@
             </div>
             <div class="divide-y divide-gray-200">
                 @forelse($notifications as $notification)
-                    <div class="p-6 {{ !$notification['read'] ? 'bg-blue-50' : '' }} hover:bg-gray-50 transition-colors">
+                    <div class="p-6 {{ !$notification->is_read ? 'bg-blue-50' : '' }} hover:bg-gray-50 transition-colors">
                         <div class="flex items-start gap-4">
                             <div class="flex-shrink-0">
-                                @if($notification['type'] === 'info')
+                                @if($notification->type === 'info')
                                     <div class="p-2 bg-blue-100 rounded-lg">
                                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                @elseif($notification['type'] === 'warning')
+                                @elseif($notification->type === 'warning')
                                     <div class="p-2 bg-yellow-100 rounded-lg">
                                         <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                                         </svg>
                                     </div>
-                                @elseif($notification['type'] === 'success')
+                                @elseif($notification->type === 'success')
                                     <div class="p-2 bg-green-100 rounded-lg">
                                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -95,20 +95,25 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium text-gray-900">{{ $notification['title'] }}</h3>
+                                    <h3 class="text-lg font-medium text-gray-900">{{ $notification->title }}</h3>
                                     <div class="flex items-center gap-2">
-                                        @if(!$notification['read'])
+                                        @if(!$notification->is_read)
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 New
                                             </span>
                                         @endif
-                                        <time class="text-sm text-gray-500">{{ $notification['created_at']->diffForHumans() }}</time>
+                                        <time class="text-sm text-gray-500">{{ $notification->created_at->diffForHumans() }}</time>
                                     </div>
                                 </div>
-                                <p class="mt-1 text-gray-600">{{ $notification['message'] }}</p>
-                                @if(!$notification['read'])
+                                <p class="mt-1 text-gray-600">{{ $notification->message }}</p>
+                                @if($notification->action_url)
+                                    <div class="mt-2">
+                                        <a href="{{ $notification->action_url }}" class="text-sm text-blue-600 hover:text-blue-900 underline">View Details</a>
+                                    </div>
+                                @endif
+                                @if(!$notification->is_read)
                                     <div class="mt-3">
-                                        <button data-notification-id="{{ $notification['id'] }}"
+                                        <button data-notification-id="{{ $notification->id }}"
                                                 onclick="markAsRead(this.dataset.notificationId)"
                                                 class="text-sm text-blue-600 hover:text-blue-900 font-medium">
                                             Mark as read
@@ -128,6 +133,9 @@
                     </div>
                 @endforelse
             </div>
+        </div>
+        <div class="mt-4">
+            {{ $notifications->links() }}
         </div>
     </div>
 
