@@ -67,17 +67,17 @@ CongreSmart provides a modern, secure, and user-friendly solution with:
 
 - **Course Code**: SENG960
 - **Course Title**: Software Development Studio
-- **Institution**: [Your University Name]
+- **Institution**: Babcock University
 - **Academic Year**: 2024/2025
-- **Degree Program**: PhD in Software Engineering
+- **Degree Program**: PhD in Computer Science (Software Engineering)
 
 ### Project Team
 
 | Role | Name | Responsibilities |
 |------|------|------------------|
-| **Team Lead / Backend Developer** | [Your Name] | System architecture, database design, backend development, API design |
-| **Frontend Developer / UI/UX** | [Teammate Name] | User interface design, Blade templates, Tailwind styling, user experience |
-| **Supervisor** | [Professor Name] | Project guidance, code review, academic oversight |
+| **Team Lead / Backend Developer** | Adeniyi Oluwabamise Joseph | System architecture, database design, backend development |
+| **Frontend Developer / UI/UX** | Okorie Grace | User interface design, Blade templates, Tailwind styling, user experience |
+| **Supervisor** | Professor Idowu Samuel | Project guidance, system architecture and design review, academic oversight |
 
 ### Learning Objectives
 
@@ -87,7 +87,6 @@ This project demonstrates proficiency in:
    - Requirements analysis and documentation
    - System design and architecture
    - Database modeling and normalization
-   - RESTful API design
 
 2. **Full-Stack Development**
    - Backend development with Laravel 12
