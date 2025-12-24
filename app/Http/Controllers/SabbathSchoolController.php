@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Http\Controllers\NotificationsController;
 
 class SabbathSchoolController extends Controller
 {
@@ -72,7 +73,7 @@ class SabbathSchoolController extends Controller
         }
 
         DB::transaction(function () use ($request) {
-            SabbathSchoolClass::create([
+            $class = SabbathSchoolClass::create([
                 'id' => (string) Str::uuid(),
                 'name' => $request->name,
                 'description' => $request->description,
@@ -80,6 +81,16 @@ class SabbathSchoolController extends Controller
                 'active' => true,
                 'created_by' => Auth::id(),
             ]);
+
+            // Notify
+            $userName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+            NotificationsController::notify(
+                'Sabbath School Class Created',
+                "$userName created a new class: {$class->name}",
+                'success',
+                null,
+                route('sabbath-school.show', $class)
+            );
         });
 
         return redirect()->route('sabbath-school.index')
@@ -142,6 +153,16 @@ class SabbathSchoolController extends Controller
                 'active' => $request->has('active'),
                 'updated_by' => Auth::id(),
             ]);
+
+            // Notify
+            $userName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+            NotificationsController::notify(
+                'Sabbath School Class Updated',
+                "$userName updated the class: {$class->name}",
+                'info',
+                null,
+                route('sabbath-school.show', $class)
+            );
         });
 
         return redirect()->route('sabbath-school.index')
@@ -157,10 +178,18 @@ class SabbathSchoolController extends Controller
 
         // Check if class has members
         if ($class->members()->count() > 0) {
-            return back()->with('error', 'Cannot delete class with active members. Please remove all members first.');
+            return back()->with('error', 'Cannot delete class with active members. Please reassign all members first.');
         }
 
         $class->delete();
+
+        // Notify
+        $userName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+        NotificationsController::notify(
+            'Sabbath School Class Deleted',
+            "$userName deleted the class: {$class->name}",
+            'warning'
+        );
 
         return redirect()->route('sabbath-school.index')
             ->with('success', 'Sabbath School class deleted successfully.');

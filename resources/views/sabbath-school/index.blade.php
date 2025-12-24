@@ -63,9 +63,17 @@
         {{-- Classes Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($classes as $class)
-                <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                <div class="relative bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                    @if(Auth::user()->role === 'superintendent')
+                        <button onclick="confirmDelete('{{ $class->id }}', '{{ addslashes($class->name) }}')"
+                                class="absolute top-3 right-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-1 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    @endif
                     <div class="flex items-start justify-between mb-4">
-                        <div class="flex-1">
+                        <div class="flex-1 pr-8">
                             <h3 class="text-lg font-semibold text-gray-900">{{ $class->name }}</h3>
                             @if($class->description)
                                 <p class="text-sm text-gray-600 mt-1">{{ Str::limit($class->description, 60) }}</p>
@@ -121,18 +129,13 @@
                                     class="edit-class-btn bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
                                 Edit
                             </button>
-                            <a href="{{ route('sabbath-school.show', $class) }}"
-                               class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
-                                View Details
-                            </a>
-                        @else
-                            <a href="{{ route('sabbath-school.show', $class) }}"
-                               class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
-                                View Details
-                            </a>
                         @endif
+                        <a href="{{ route('sabbath-school.show', $class) }}"
+                           class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
+                            View Details
+                        </a>
                         <a href="{{ route('sabbath-school.attendance', $class) }}"
-                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors {{ Auth::user()->role === 'superintendent' ? 'col-span-2' : '' }}">
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
                             Take Attendance
                         </a>
                     </div>
@@ -287,6 +290,40 @@
     </div>
     @endif
 
+    {{-- Delete Confirmation Modal --}}
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-md w-full">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-lg font-medium text-gray-900">Delete Class</h3>
+                            <p id="deleteMessage" class="text-sm text-gray-500">Are you sure you want to delete this class?</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="closeDeleteModal()" class="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                        <form id="deleteForm" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openCreateModal() {
             document.getElementById('createModal').classList.remove('hidden');
@@ -300,15 +337,25 @@
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_description').value = description || '';
             document.getElementById('edit_coordinator_id').value = coordinatorId || '';
-            
+
             // Update form action
             document.getElementById('editForm').action = `/sabbath-school/${id}`;
-            
+
             document.getElementById('editModal').classList.remove('hidden');
         }
 
         function closeEditModal() {
             document.getElementById('editModal').classList.add('hidden');
+        }
+
+        function confirmDelete(id, name) {
+            document.getElementById('deleteMessage').textContent = `Are you sure you want to delete "${name}"? This action cannot be undone.`;
+            document.getElementById('deleteForm').action = `/sabbath-school/${id}`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
         }
 
         // Close modals when clicking outside
@@ -318,6 +365,9 @@
             }
             if (event.target.id === 'editModal') {
                 closeEditModal();
+            }
+            if (event.target.id === 'deleteModal') {
+                closeDeleteModal();
             }
         });
     </script>

@@ -72,7 +72,7 @@
             </button>
 
             {{-- Dropdown Menu --}}
-            <div x-show="open"
+            <div x-show="open" 
                  @click.away="open = false"
                  x-transition:enter="transition ease-out duration-100"
                  x-transition:enter-start="transform opacity-0 scale-95"
@@ -113,3 +113,4 @@
 </header>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
