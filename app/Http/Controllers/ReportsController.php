@@ -57,7 +57,7 @@ class ReportsController extends Controller
 
         $attendanceStats = $classes->map(function ($class) {
             $records = $class->attendance;
-            $totalSessions = $records->distinct('date')->count();
+            $totalSessions = $records->unique('date')->count();
             $memberCount = $class->members()->count();
 
             return [
@@ -67,7 +67,7 @@ class ReportsController extends Controller
                 'total_present' => $records->where('present', true)->count(),
                 'attendance_rate' => ($totalSessions > 0 && $memberCount > 0) ?
                     round(($records->where('present', true)->count() / ($totalSessions * $memberCount)) * 100, 1) : 0,
-                'recent_sessions' => $records->distinct('date')->orderBy('date', 'desc')->take(5)->get(),
+                'recent_sessions' => $records->unique('date')->sortByDesc('date')->take(5),
             ];
         });
 
@@ -131,9 +131,8 @@ class ReportsController extends Controller
         ];
 
         foreach ($members as $member) {
-            if ($member->date_of_birth) {
-                $age = now()->diffInYears($member->date_of_birth);
-
+            $age = $member->age;
+            if ($age !== null) {
                 if ($age <= 12) $ageGroups['0-12']++;
                 elseif ($age <= 18) $ageGroups['13-18']++;
                 elseif ($age <= 30) $ageGroups['19-30']++;

@@ -65,25 +65,49 @@
             @forelse($classes as $class)
                 <div class="relative bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
                     @if(Auth::user()->role === 'superintendent')
-                        <button onclick="confirmDelete('{{ $class->id }}', '{{ addslashes($class->name) }}')"
-                                class="absolute top-3 right-0 mr-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full p-1 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
+                        <div class="absolute top-0 right-0 mr-3 mt-3">
+                            <button
+                                onclick="openEditModal(
+                                '{{ $class->id }}',
+                                '{{ addslashes($class->name) }}',
+                                '{{ addslashes($class->description ?? '') }}',
+                                '{{ $class->coordinator_id ?? '' }}',
+                            )"
+                                class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition"
+                                title="Edit Class"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M11 5h2m-1-1v2m7.071 7.071l-9.9 9.9a2 2 0 01-1.414.586H6a1 1 0 01-1-1v-1.757a2 2 0 01.586-1.414l9.9-9.9a2 2 0 012.828 0l.757.757a2 2 0 010 2.828z" />
+                                </svg>
+                            </button>
+                            {{-- Delete Icon --}}
+                            <button
+                                onclick="confirmDelete('{{ $class->id }}', '{{ addslashes($class->name) }}')"
+                                class="p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition"
+                                title="Delete Class"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
                     @endif
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex-1 pr-8">
-                            <h3 class="text-lg font-semibold text-gray-900">{{ $class->name }}</h3>
+                            <div class="flex gap-2">
+                                <h3 class="flex text-lg font-semibold text-gray-900">{{ $class->name }}</h3>
+                                @if(!$class->active)
+                                    <span class="flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        Inactive
+                                    </span>
+                                @endif
+                            </div>
                             @if($class->description)
                                 <p class="text-sm text-gray-600 mt-1">{{ Str::limit($class->description, 60) }}</p>
                             @endif
                         </div>
-                        @if(!$class->active)
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                Inactive
-                            </span>
-                        @endif
                     </div>
 
                     <div class="space-y-3 mb-4">
@@ -94,12 +118,12 @@
                             <span>{{ $class->coordinator?->first_name ?? 'N/A' }} {{ $class->coordinator?->last_name ?? '' }}</span>
                         </div>
 
-                        <div class="flex items-center gap-2 text-sm text-gray-600">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ ucfirst($class->meeting_day) }} at {{ $class->meeting_time }}</span>
-                        </div>
+{{--                        <div class="flex items-center gap-2 text-sm text-gray-600">--}}
+{{--                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">--}}
+{{--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />--}}
+{{--                            </svg>--}}
+{{--                            <span>{{ ucfirst($class->meeting_day) }} at {{ $class->meeting_time }}</span>--}}
+{{--                        </div>--}}
 
                         @if($class->location)
                             <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -120,16 +144,6 @@
                     </div>
 
                     <div class="flex gap-2 mt-4">
-                        @if(Auth::user()->role === 'superintendent')
-                            <button data-class-id="{{ $class->id }}"
-                                    data-class-name="{{ addslashes($class->name) }}"
-                                    data-class-description="{{ addslashes($class->description ?? '') }}"
-                                    data-coordinator-id="{{ $class->coordinator_id ?? 'null' }}"
-                                    onclick="openEditModal(this.dataset.classId, this.dataset.className, this.dataset.classDescription, this.dataset.coordinatorId)"
-                                    class="edit-class-btn bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
-                                Edit
-                            </button>
-                        @endif
                         <a href="{{ route('sabbath-school.show', $class) }}"
                            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors">
                             View Details
@@ -275,6 +289,14 @@
                             </select>
                         </div>
 
+{{--                        <div class="flex items  -center">--}}
+{{--                            <input type="checkbox" id="edit_active" name="active" value="1" {{ old('active', $class->active) ? 'checked' : '' }}--}}
+{{--                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">--}}
+{{--                            <label for="active" class="ml-2 block text-sm text-gray-900">--}}
+{{--                                Active class--}}
+{{--                            </label>--}}
+{{--                        </div>--}}
+
                         <div class="flex gap-3">
                             <button type="button" onclick="closeEditModal()" class="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg transition-colors">
                                 Cancel
@@ -333,7 +355,7 @@
             document.getElementById('createModal').classList.add('hidden');
         }
 
-        function openEditModal(id, name, description, coordinatorId) {
+        function openEditModal(id, name, description, coordinatorId, active) {
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_description').value = description || '';
             document.getElementById('edit_coordinator_id').value = coordinatorId || '';

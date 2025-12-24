@@ -17,7 +17,7 @@
             <h1 class="text-2xl font-semibold">CongreSmart</h1>
             <p class="text-sm text-gray-500">Intelligent Church Membership & Attendance Management</p>
         </div>
-        
+
         <div class="px-6 pb-6">
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
@@ -29,12 +29,12 @@
                         <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        <input id="email" 
-                               name="email" 
-                               type="email" 
+                        <input id="email"
+                               name="email"
+                               type="email"
                                value="{{ old('email') }}"
                                placeholder="your.email@church.com"
-                               required 
+                               required
                                autofocus
                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
                     </div>
@@ -47,9 +47,9 @@
                         <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        <input id="password" 
-                               name="password" 
-                               type="password" 
+                        <input id="password"
+                               name="password"
+                               type="password"
                                placeholder="••••••••"
                                required
                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
@@ -99,7 +99,7 @@
                     </div>
                     <div>
                         <span class="text-gray-600 font-medium">SS Coordinator:</span>
-                        <div class="ml-2 mt-1">Email: coordinator@church.com</div>
+                        <div class="ml-2 mt-1">Email: coordinator1@church.com</div>
                         <div class="ml-2">Password: coord123</div>
                     </div>
                     <div>

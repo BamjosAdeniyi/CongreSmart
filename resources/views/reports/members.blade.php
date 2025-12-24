@@ -2,20 +2,32 @@
     <style>
         @media print {
             .no-print { display: none !important; }
-            body { padding: 0; margin: 0; background: white; }
-            .bg-white { border: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+            main.flex-1 { overflow-y: visible !important; }
+            div.flex-1 { overflow: visible !important; }
+            .bg-white { border: none !important; box-shadow: none !important; }
             .rounded-xl { border-radius: 0 !important; }
-            .shadow-sm { shadow: none !important; }
+            .shadow-sm { box-shadow: none !important; }
             .p-6 { padding: 0.5rem !important; }
-            table { font-size: 10pt; }
+            table { width: 100%; font-size: 10pt; page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            thead { display: table-header-group; }
+            tbody { display: table-row-group; }
             th, td { padding: 4px 8px !important; }
-            h1 { font-size: 18pt; margin-bottom: 0.5rem; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
             .grid { display: block !important; }
             .grid > div { margin-bottom: 1rem; page-break-inside: avoid; }
         }
     </style>
 
-    <div class="space-y-4 md:space-y-6">
+    <div class="space-y-4 md:space-y-6 print-container">
         <div class="flex items-center justify-between no-print">
             <div class="flex items-center gap-4">
                 <a href="{{ route('reports.index') }}" class="text-gray-400 hover:text-gray-600">

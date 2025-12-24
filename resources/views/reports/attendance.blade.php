@@ -2,19 +2,28 @@
     <style>
         @media print {
             .no-print { display: none !important; }
-            body { padding: 0; margin: 0; background: white; }
-            .bg-white { border: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+            main.flex-1 { overflow-y: visible !important; }
+            div.flex-1 { overflow: visible !important; }
+            .bg-white { border: none !important; box-shadow: none !important; }
             .rounded-xl { border-radius: 0 !important; }
             .p-6 { padding: 0.5rem !important; }
             table { font-size: 10pt; }
             th, td { padding: 4px 8px !important; }
-            h1 { font-size: 18pt; margin-bottom: 0.5rem; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
             .grid { display: block !important; }
             .grid > div { margin-bottom: 1rem; page-break-inside: avoid; }
         }
     </style>
 
-    <div class="space-y-4 md:space-y-6">
+    <div class="space-y-4 md:space-y-6 print-container">
         <div class="flex items-center justify-between no-print">
             <div class="flex items-center gap-4">
                 <a href="{{ route('reports.index') }}" class="text-gray-400 hover:text-gray-600">
@@ -88,15 +97,9 @@
 
         {{-- Recent Attendance Records --}}
         <div class="bg-white rounded-xl border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
+            <div class="p-6 border-b border-gray-200 no-print">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-semibold">Recent Attendance Records</h2>
-                    <button onclick="exportAttendance()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Export
-                    </button>
                 </div>
             </div>
             <div class="p-6">
@@ -108,21 +111,26 @@
                                     <h4 class="font-medium text-gray-900 mb-3">{{ $stat['class']->name }}</h4>
                                     <div class="space-y-2">
                                         @foreach($stat['recent_sessions'] as $session)
+                                            @php
+                                                $totalCount = $session->total_count ?? 0;
+                                                $presentCount = $session->present_count ?? 0;
+                                                $percentage = $totalCount > 0 ? round(($presentCount / $totalCount) * 100) : 0;
+                                            @endphp
                                             <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
                                                 <div class="flex items-center gap-4">
                                                     <div class="text-sm font-medium text-gray-900">
                                                         {{ $session->date->format('M j, Y') }}
                                                     </div>
                                                     <div class="text-sm text-gray-600">
-                                                        {{ $session->present_count }} of {{ $session->total_count }} present
+                                                        {{ $presentCount }} of {{ $totalCount }} present
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center gap-2">
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                        @if(($session->present_count / $session->total_count) >= 0.8) bg-green-100 text-green-800
-                                                        @elseif(($session->present_count / $session->total_count) >= 0.6) bg-yellow-100 text-yellow-800
+                                                        @if($percentage >= 80) bg-green-100 text-green-800
+                                                        @elseif($percentage >= 60) bg-yellow-100 text-yellow-800
                                                         @else bg-red-100 text-red-800 @endif">
-                                                        {{ round(($session->present_count / $session->total_count) * 100) }}%
+                                                        {{ $percentage }}%
                                                     </span>
                                                 </div>
                                             </div>
@@ -144,11 +152,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function exportAttendance() {
-            // In a real implementation, this would trigger a download
-            alert('Export functionality would generate an attendance report');
-        }
-    </script>
 </x-app-layout>
