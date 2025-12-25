@@ -19,10 +19,10 @@
 /storage/*.key
 /storage/pail
 /vendor
-/Prototype from FigmaMake
 Homestead.json
 Homestead.yaml
 Thumbs.db
 npm-debug.log
-yarn-error.log 
+yarn-error.log
 GEMINI.md
+/Prototype_from_FigmaMake
