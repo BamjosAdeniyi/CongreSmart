@@ -5,6 +5,36 @@
             <p class="text-sm md:text-base text-gray-500">Enter member contributions by category</p>
         </div>
 
+        {{-- General Error Display --}}
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">There were {{ $errors->count() }} errors with your submission</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <ul role="list" class="list-disc pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Success Message --}}
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4" role="alert">
+                <span class="font-medium">Success!</span> {{ session('success') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('finance.contributions.store') }}" class="space-y-6">
             @csrf
 
@@ -25,9 +55,6 @@
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
                                 required
                             />
-                            @error('date')
-                                <p class="text-red-600 text-xs">{{ $message }}</p>
-                            @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-medium">Grand Total</label>
@@ -59,23 +86,16 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="sticky left-0 bg-white px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">Member Name</th>
-                                    @forelse($categories ?? [] as $category)
+                                    @foreach($categories as $category)
                                         <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
                                             {{ $category->name }}
                                         </th>
-                                    @empty
-                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                                            Tithe
-                                        </th>
-                                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                                            Offering
-                                        </th>
-                                    @endforelse
+                                    @endforeach
                                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">Total</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($members ?? [] as $member)
+                                @foreach($members as $member)
                                     <tr>
                                         <td class="sticky left-0 bg-white px-4 py-4 whitespace-nowrap">
                                             <div>
@@ -83,72 +103,34 @@
                                                 <p class="text-xs text-gray-500">{{ $member->family_name }}</p>
                                             </div>
                                         </td>
-                                        @forelse($categories ?? [['id' => 1, 'name' => 'Tithe'], ['id' => 2, 'name' => 'Offering']] as $category)
+                                        @foreach($categories as $category)
                                             <td class="px-4 py-4 text-center">
                                                 <input
                                                     type="number"
                                                     step="0.01"
                                                     min="0"
                                                     placeholder="0.00"
-                                                    name="contributions[{{ $member->id }}][{{ $category['id'] ?? $category->id }}]"
+                                                    name="contributions[{{ $member->member_id }}][{{ $category->id }}]"
                                                     class="w-24 px-2 py-1 text-center rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm contribution-input"
-                                                    data-member-id="{{ $member->id }}"
-                                                    data-category-id="{{ $category['id'] ?? $category->id }}"
+                                                    data-member-id="{{ $member->member_id }}"
+                                                    data-category-id="{{ $category->id }}"
                                                 />
                                             </td>
-                                        @empty
-                                            <td class="px-4 py-4 text-center">
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    placeholder="0.00"
-                                                    name="contributions[{{ $member->id }}][1]"
-                                                    class="w-24 px-2 py-1 text-center rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm contribution-input"
-                                                    data-member-id="{{ $member->id }}"
-                                                    data-category-id="1"
-                                                />
-                                            </td>
-                                            <td class="px-4 py-4 text-center">
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    placeholder="0.00"
-                                                    name="contributions[{{ $member->id }}][2]"
-                                                    class="w-24 px-2 py-1 text-center rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm contribution-input"
-                                                    data-member-id="{{ $member->id }}"
-                                                    data-category-id="2"
-                                                />
-                                            </td>
-                                        @endforelse
+                                        @endforeach
                                         <td class="px-4 py-4 text-right">
-                                            <span class="text-sm member-total" data-member-id="{{ $member->id }}">₦0.00</span>
+                                            <span class="text-sm member-total" data-member-id="{{ $member->member_id }}">₦0.00</span>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                            No members found. <a href="{{ route('members.create') }}" class="text-blue-600 hover:text-blue-900">Add members first</a>.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                                 <tr class="bg-gray-50">
                                     <td class="sticky left-0 bg-gray-50 px-4 py-4">
                                         <span class="text-sm font-medium">Category Totals</span>
                                     </td>
-                                    @forelse($categories ?? [['id' => 1], ['id' => 2]] as $category)
+                                    @foreach($categories as $category)
                                         <td class="px-4 py-4 text-center">
-                                            <span class="text-sm category-total" data-category-id="{{ $category['id'] ?? $category->id }}">₦0.00</span>
+                                            <span class="text-sm category-total" data-category-id="{{ $category->id }}">₦0.00</span>
                                         </td>
-                                    @empty
-                                        <td class="px-4 py-4 text-center">
-                                            <span class="text-sm category-total" data-category-id="1">₦0.00</span>
-                                        </td>
-                                        <td class="px-4 py-4 text-center">
-                                            <span class="text-sm category-total" data-category-id="2">₦0.00</span>
-                                        </td>
-                                    @endforelse
+                                    @endforeach
                                     <td class="px-4 py-4 text-right">
                                         <span class="text-sm font-medium" id="table-grand-total">₦0.00</span>
                                     </td>

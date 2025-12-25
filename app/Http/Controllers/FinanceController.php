@@ -67,29 +67,35 @@ class FinanceController extends Controller
     {
         $request->validate([
             'date' => 'required|date',
-            'contributions' => 'required|array',
+            'contributions' => 'sometimes|array',
         ]);
 
         $date = $request->date;
-        $contributionsData = $request->contributions;
+        $contributionsData = $request->contributions ?? [];
         $recordedBy = Auth::id();
+
+        if (empty($contributionsData)) {
+            return redirect()->back()->with('error', 'No contribution data was submitted.');
+        }
 
         DB::beginTransaction();
 
         try {
             foreach ($contributionsData as $memberId => $categories) {
                 foreach ($categories as $categoryId => $amount) {
-                    $amount = floatval($amount);
+                    if (!empty($amount)) {
+                        $amount = floatval($amount);
 
-                    if ($amount > 0) {
-                        Contribution::create([
-                            'id' => (string) Str::uuid(),
-                            'member_id' => $memberId,
-                            'category_id' => $categoryId,
-                            'amount' => $amount,
-                            'date' => $date,
-                            'recorded_by' => $recordedBy,
-                        ]);
+                        if ($amount > 0) {
+                            Contribution::create([
+                                'id' => (string) Str::uuid(),
+                                'member_id' => $memberId,
+                                'category_id' => $categoryId,
+                                'amount' => $amount,
+                                'date' => $date,
+                                'recorded_by' => $recordedBy,
+                            ]);
+                        }
                     }
                 }
             }
@@ -101,10 +107,9 @@ class FinanceController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-
             return redirect()->back()
                             ->withInput()
-                            ->with('error', 'Failed to record contributions. Please try again.');
+                            ->with('error', 'Failed to record contributions. Please try again. ' . $e->getMessage());
         }
     }
 
@@ -185,23 +190,18 @@ class FinanceController extends Controller
         $startDate = $request->get('start_date', now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->endOfMonth()->format('Y-m-d'));
 
-        // Get contributions within date range
         $contributions = Contribution::with(['member', 'category'])
             ->whereBetween('date', [$startDate, $endDate])
             ->orderBy('date', 'desc')
             ->get();
 
-        // Calculate totals by category
         $categoryTotals = $contributions->groupBy('category.name')
-            ->map(function ($group) {
-                return $group->sum('amount');
-            });
+            ->map(fn($group) => $group->sum('amount'));
 
-        // Calculate member totals
-        $memberTotals = $contributions->groupBy('member_id')
+        $memberTotals = $contributions->groupBy('member.name')
             ->map(function ($group) {
                 return [
-                    'member' => $group->first()->member,
+                    'member_name' => $group->first()->member->name,
                     'total' => $group->sum('amount'),
                     'count' => $group->count(),
                 ];
@@ -210,13 +210,22 @@ class FinanceController extends Controller
 
         $grandTotal = $contributions->sum('amount');
 
+        $chartData = [
+            'income' => $contributions->where('category.category_type', 'income')->sum('amount'),
+            'expense' => $contributions->where('category.category_type', 'expense')->sum('amount'),
+            'category_breakdown' => $categoryTotals->map(function($total, $name) {
+                return ['name' => $name, 'total' => $total];
+            })->values(),
+        ];
+
         return view('finance.reports', compact(
             'contributions',
             'categoryTotals',
             'memberTotals',
             'grandTotal',
             'startDate',
-            'endDate'
+            'endDate',
+            'chartData'
         ));
     }
 }

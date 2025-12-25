@@ -74,13 +74,38 @@
                 <h2 class="text-lg font-semibold">Recent Contributions</h2>
             </div>
             <div class="p-6">
-                <div class="text-center text-gray-500 py-8">
-                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p>No contributions recorded yet.</p>
-                    <p class="text-sm mt-1">Start by <a href="{{ $contributionsUrl }}" class="text-blue-600 hover:text-blue-900">recording contributions</a>.</p>
-                </div>
+                @if($recentContributions->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-3 px-4 font-medium">Date</th>
+                                    <th class="text-left py-3 px-4 font-medium">Member</th>
+                                    <th class="text-left py-3 px-4 font-medium">Category</th>
+                                    <th class="text-right py-3 px-4 font-medium">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentContributions as $contribution)
+                                    <tr class="border-b last:border-b-0">
+                                        <td class="py-4 px-4">{{ $contribution->date->format('M j, Y') }}</td>
+                                        <td class="py-4 px-4">{{ $contribution->member?->first_name }} {{ $contribution->member?->last_name }}</td>
+                                        <td class="py-4 px-4">{{ $contribution->category?->name ?? 'N/A' }}</td>
+                                        <td class="py-4 px-4 text-right font-semibold">₦{{ number_format($contribution->amount, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p>No contributions recorded yet.</p>
+                        <p class="text-sm mt-1">Start by <a href="{{ $contributionsUrl }}" class="text-blue-600 hover:text-blue-900">recording contributions</a>.</p>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

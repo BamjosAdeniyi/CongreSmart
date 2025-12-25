@@ -265,34 +265,17 @@ SQL;
     public function financial(Request $request)
     {
         // Financial statistics
-        $totalContributions = Cache::remember('dashboard.financial.total_contributions', 30, function () {
-            return \App\Models\Contribution::sum('amount');
-        });
+        $totalContributions = Cache::remember('dashboard.financial.total_contributions', 30, fn() => Contribution::sum('amount'));
+        $monthlyContributions = Cache::remember('dashboard.financial.monthly_contributions', 30, fn() => Contribution::whereMonth('date', now()->month)->whereYear('date', now()->year)->sum('amount'));
 
-        // This month's contributions
-        $monthlyContributions = Cache::remember('dashboard.financial.monthly_contributions', 30, function () {
-            return \App\Models\Contribution::whereMonth('date', now()->month)
-                ->whereYear('date', now()->year)
-                ->sum('amount');
-        });
-
-        // Categories with stats
         $categories = Cache::remember('dashboard.financial.categories', 30, function () {
             return \App\Models\FinancialCategory::withCount('contributions')
-                ->with(['contributions' => function ($query) {
-                    $query->selectRaw('category_id, SUM(amount) as total_amount')
-                          ->groupBy('category_id');
-                }])
-                ->get()
-                ->map(function ($category) {
-                    $category->total_amount = $category->contributions->sum('total_amount');
-                    return $category;
-                });
+                ->withSum('contributions', 'amount')
+                ->get();
         });
 
-        // Recent contributions
         $recentContributions = Cache::remember('dashboard.financial.recent_contributions', 30, function () {
-            return \App\Models\Contribution::with(['member', 'category'])
+            return Contribution::with(['member', 'category'])
                 ->orderBy('date', 'desc')
                 ->limit(10)
                 ->get();

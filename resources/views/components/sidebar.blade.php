@@ -25,16 +25,16 @@
 @endphp
 
 {{-- Desktop Sidebar --}}
-<aside class="hidden md:flex w-64 bg-white border-r border-gray-200 h-screen flex-col fixed left-0 top-0 z-40">
+<aside class="hidden md:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen flex-col fixed left-0 top-0 z-40">
     {{-- Logo Section --}}
-    <div class="p-6 border-b border-gray-200">
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center p-1">
                 <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-8 h-8 object-contain" />
             </div>
             <div>
-                <h1 class="text-lg font-semibold">CongreSmart</h1>
-                <p class="text-xs text-gray-500">Church Management</p>
+                <h1 class="text-lg font-semibold dark:text-white">CongreSmart</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Church Management</p>
             </div>
         </div>
     </div>
@@ -56,7 +56,7 @@
                 }
             @endphp
             <a href="{{ $routeUrl }}"
-               class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ $isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50' }}">
+               class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ $isActive ? 'bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
                 </svg>
@@ -67,20 +67,20 @@
 </aside>
 
 {{-- Mobile Sidebar (Sheet/Drawer) --}}
-<div id="mobile-sidebar" class="md:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300">
+<div id="mobile-sidebar" class="md:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full transition-transform duration-300">
     <div class="flex flex-col h-full">
         {{-- Logo Section --}}
-        <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center p-1">
                     <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-6 h-6 object-contain" />
                 </div>
                 <div>
-                    <h1 class="text-lg font-semibold">CongreSmart</h1>
-                    <p class="text-xs text-gray-500">Church Management</p>
+                    <h1 class="text-lg font-semibold dark:text-white">CongreSmart</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Church Management</p>
                 </div>
             </div>
-            <button onclick="toggleMobileSidebar()" class="p-2 hover:bg-gray-100 rounded-lg">
+            <button onclick="toggleMobileSidebar()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -105,7 +105,7 @@
                 @endphp
                 <a href="{{ $routeUrl }}"
                    onclick="toggleMobileSidebar()"
-                   class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ $isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50' }}">
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {{ $isActive ? 'bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}" />
                     </svg>
