@@ -1,22 +1,16 @@
 <x-app-layout>
     <div class="space-y-4 md:space-y-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <div>
-                @php
-                    try {
-                        $backUrl = route('finances.index');
-                    } catch (\Exception $e) {
-                        $backUrl = url('/finance');
-                    }
-                @endphp
-                <a href="{{ $backUrl }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('finance.index') }}" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Back
                 </a>
-                <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Financial Categories</h1>
-                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage contribution types and categories</p>
+                <div>
+                    <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Financial Categories</h1>
+                    <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage contribution types and categories</p>
+                </div>
             </div>
             <button onclick="openCreateModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 w-full sm:w-auto">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

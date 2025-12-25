@@ -1,8 +1,15 @@
 <x-app-layout>
     <div class="space-y-4 md:space-y-6">
-        <div>
-            <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Record Contributions</h1>
-            <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Enter member contributions by category</p>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('finance.index') }}" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Record Contributions</h1>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Enter member contributions by category</p>
+            </div>
         </div>
 
         {{-- General Error Display --}}
@@ -59,16 +66,16 @@
                         <div class="space-y-2">
                             <label class="text-sm font-medium dark:text-gray-300">Grand Total</label>
                             <div class="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span class="text-lg dark:text-gray-200" id="grand-total">₦0.00</span>
+                                <span class="text-lg dark:text-gray-600" id="grand-total">₦0.00</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mt-4">
-                        <p class="text-sm text-blue-800 dark:text-blue-300">
+                        <p class="text-sm text-blue-800 dark:text-blue-400">
                             Enter contribution amounts in the table below. Leave cells empty for no contribution. Totals are calculated automatically.
                         </p>
                     </div>

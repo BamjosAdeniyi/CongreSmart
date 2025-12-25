@@ -1,4 +1,28 @@
 <x-app-layout>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+            main.flex-1 { overflow-y: visible !important; }
+            div.flex-1 { overflow: visible !important; }
+            .bg-white { border: none !important; box-shadow: none !important; }
+            .rounded-xl { border-radius: 0 !important; }
+            .p-6 { padding: 0.5rem !important; }
+            table { font-size: 10pt; }
+            th, td { padding: 4px 8px !important; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            .grid { display: block !important; }
+            .grid > div { margin-bottom: 1rem; page-break-inside: avoid; }
+        }
+    </style>
+
     <div class="space-y-4 md:space-y-6 print-container">
         <div class="flex items-center justify-between no-print">
             <div class="flex items-center gap-4">
