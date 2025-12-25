@@ -2,17 +2,17 @@
     <div class="space-y-4 md:space-y-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-xl md:text-2xl text-gray-900">Sabbath School Coordinator Dashboard</h1>
-                <p class="text-sm md:text-base text-gray-500">Manage your Sabbath School classes</p>
+                <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Sabbath School Coordinator Dashboard</h1>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage your Sabbath School classes</p>
             </div>
         </div>
 
         {{-- Summary Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">My Classes</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">My Classes</p>
                         <p class="text-2xl font-bold text-blue-600">{{ $myClasses->count() }}</p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -23,10 +23,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Total Members</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Members</p>
                         <p class="text-2xl font-bold text-green-600">{{ number_format($totalMembers) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
@@ -37,10 +37,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Avg. Attendance</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Attendance</p>
                         <p class="text-2xl font-bold text-purple-600">{{ number_format($avgAttendance, 1) }}%</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
@@ -51,10 +51,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Recent Sessions</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Recent Sessions</p>
                         <p class="text-2xl font-bold text-orange-600">{{ $recentAttendance->count() }}</p>
                     </div>
                     <div class="p-3 bg-orange-100 rounded-lg">
@@ -67,27 +67,27 @@
         </div>
 
         {{-- My Classes --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900">My Classes</h2>
-                <a href="{{ route('sabbath-school.index') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">My Classes</h2>
+                <a href="{{ route('sabbath-school.index') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                     View All Classes
                 </a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @forelse($myClasses as $class)
-                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div class="flex items-start justify-between mb-3">
                             <div>
-                                <h3 class="font-semibold text-gray-900">{{ $class->name }}</h3>
-                                <p class="text-sm text-gray-600">{{ $class->meeting_day }} at {{ $class->meeting_time }}</p>
+                                <h3 class="font-semibold text-gray-900 dark:text-gray-200">{{ $class->name }}</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $class->meeting_day }} at {{ $class->meeting_time }}</p>
                             </div>
                             @if($class->active)
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
                                     Active
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
                                     Inactive
                                 </span>
                             @endif
@@ -95,18 +95,18 @@
 
                         <div class="space-y-2 mb-4">
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Members:</span>
-                                <span class="font-medium">{{ $class->members_count }}</span>
+                                <span class="text-gray-600 dark:text-gray-400">Members:</span>
+                                <span class="font-medium dark:text-gray-200">{{ $class->members_count }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Location:</span>
-                                <span class="font-medium">{{ $class->location ?? 'Not set' }}</span>
+                                <span class="text-gray-600 dark:text-gray-400">Location:</span>
+                                <span class="font-medium dark:text-gray-200">{{ $class->location ?? 'Not set' }}</span>
                             </div>
                         </div>
 
                         <div class="flex gap-2">
                             <a href="{{ route('sabbath-school.show', $class) }}"
-                               class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm font-medium text-center transition-colors">
+                               class="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded text-sm font-medium text-center transition-colors">
                                 View Details
                             </a>
                             <a href="{{ route('sabbath-school.attendance', $class) }}"
@@ -120,8 +120,8 @@
                         <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Classes Assigned</h3>
-                        <p class="text-gray-600">You haven't been assigned as coordinator for any classes yet.</p>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Classes Assigned</h3>
+                        <p class="text-gray-600 dark:text-gray-400">You haven't been assigned as coordinator for any classes yet.</p>
                     </div>
                 @endforelse
             </div>
@@ -129,23 +129,23 @@
 
         {{-- Recent Attendance --}}
         @if($recentAttendance->count() > 0)
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900">Recent Attendance</h2>
-                <a href="{{ route('reports.attendance') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Attendance</h2>
+                <a href="{{ route('reports.attendance') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                     View Reports
                 </a>
             </div>
             <div class="space-y-3">
                 @foreach($recentAttendance->take(5) as $record)
-                    <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                    <div class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
                         <div>
-                            <h4 class="font-medium text-gray-900">{{ $record->member?->first_name }} {{ $record->member?->last_name }}</h4>
-                            <p class="text-sm text-gray-600">{{ $record->class?->name }} - {{ $record->date?->format('M j, Y') }}</p>
+                            <h4 class="font-medium text-gray-900 dark:text-gray-200">{{ $record->member?->first_name }} {{ $record->member?->last_name }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $record->class?->name }} - {{ $record->date?->format('M j, Y') }}</p>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            @if($record->present) bg-green-100 text-green-800
-                            @else bg-red-100 text-red-800 @endif">
+                            @if($record->present) bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
+                            @else bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 @endif">
                             {{ $record->present ? 'Present' : 'Absent' }}
                         </span>
                     </div>

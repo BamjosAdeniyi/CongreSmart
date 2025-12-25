@@ -7,8 +7,8 @@
                 </svg>
             </a>
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Assign Members - {{ $class->name }}</h1>
-                <p class="text-gray-600">Manage member assignments for this class</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Assign Members - {{ $class->name }}</h1>
+                <p class="text-gray-600 dark:text-gray-400">Manage member assignments for this class</p>
             </div>
         </div>
 
@@ -16,17 +16,17 @@
             @csrf
 
             {{-- Assigned Members --}}
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold mb-4">Currently Assigned Members (<span id="assigned-members-count">{{ $assignedMembers->count() }}</span>)</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Currently Assigned Members (<span id="assigned-members-count">{{ $assignedMembers->count() }}</span>)</h3>
                 <div class="space-y-2" id="assigned-members-list">
                     @forelse($assignedMembers as $member)
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg member-item" data-member-id="{{ $member->member_id }}" data-member-name="{{ strtolower($member->first_name . ' ' . $member->last_name) }}">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg member-item" data-member-id="{{ $member->member_id }}" data-member-name="{{ strtolower($member->first_name . ' ' . $member->last_name) }}">
                             <div class="flex items-center gap-3">
                                 <input type="checkbox" name="member_ids[]" value="{{ $member->member_id }}" checked
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded assigned-checkbox">
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded assigned-checkbox">
                                 <div>
-                                    <span class="font-medium">{{ $member->first_name }} {{ $member->last_name }}</span>
-                                    <span class="text-sm text-gray-500 ml-2">{{ $member->email }}</span>
+                                    <span class="font-medium dark:text-gray-200">{{ $member->first_name }} {{ $member->last_name }}</span>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">{{ $member->email }}</span>
                                 </div>
                             </div>
                             <button type="button" onclick="removeMember('{{ $member->member_id }}')" class="text-red-600 hover:text-red-800 remove-btn">
@@ -36,37 +36,37 @@
                             </button>
                         </div>
                     @empty
-                        <p class="empty-state-msg text-gray-500 text-center py-4">No members currently assigned to this class.</p>
+                        <p class="empty-state-msg text-gray-500 dark:text-gray-400 text-center py-4">No members currently assigned to this class.</p>
                     @endforelse
                 </div>
             </div>
 
             {{-- Available Members --}}
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold mb-4">Available Members (<span id="available-members-count">{{ $availableMembers->count() }}</span>)</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Available Members (<span id="available-members-count">{{ $availableMembers->count() }}</span>)</h3>
                 <div class="mb-4">
                     <input type="text" id="member-search" placeholder="Search available members..."
-                           class="w-full px-3 py-2 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
+                           class="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
                 </div>
                 <div class="space-y-2 max-h-96 overflow-y-auto" id="available-members-list">
                     @forelse($availableMembers as $member)
-                        <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 member-item" data-member-id="{{ $member->member_id }}" data-member-name="{{ strtolower($member->first_name . ' ' . $member->last_name) }}">
+                        <div class="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 member-item" data-member-id="{{ $member->member_id }}" data-member-name="{{ strtolower($member->first_name . ' ' . $member->last_name) }}">
                             <input type="checkbox" name="member_ids[]" value="{{ $member->member_id }}"
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded available-checkbox">
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded available-checkbox">
                             <div>
-                                <span class="font-medium">{{ $member->first_name }} {{ $member->last_name }}</span>
-                                <span class="text-sm text-gray-500 ml-2">{{ $member->email }}</span>
+                                <span class="font-medium dark:text-gray-200">{{ $member->first_name }} {{ $member->last_name }}</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">{{ $member->email }}</span>
                             </div>
                         </div>
                     @empty
-                        <p class="empty-state-msg text-gray-500 text-center py-4">No available members to assign.</p>
+                        <p class="empty-state-msg text-gray-500 dark:text-gray-400 text-center py-4">No available members to assign.</p>
                     @endforelse
                 </div>
             </div>
 
             {{-- Actions --}}
             <div class="flex justify-end gap-3">
-                <a href="{{ route('sabbath-school.show', $class) }}" class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg">
+                <a href="{{ route('sabbath-school.show', $class) }}" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg">
                     Cancel
                 </a>
                 <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
@@ -101,7 +101,7 @@
                 if (count === 0) {
                     if (!emptyMsg) {
                         emptyMsg = document.createElement('p');
-                        emptyMsg.className = 'empty-state-msg text-gray-500 text-center py-4';
+                        emptyMsg.className = 'empty-state-msg text-gray-500 dark:text-gray-400 text-center py-4';
                         emptyMsg.textContent = message;
                         list.appendChild(emptyMsg);
                     }
@@ -126,10 +126,10 @@
                 const checkbox = memberItem.querySelector('input[type="checkbox"]');
 
                 checkbox.checked = true;
-                checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded assigned-checkbox';
+                checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded assigned-checkbox';
 
-                memberItem.classList.remove('available-member-item', 'border', 'border-gray-200', 'hover:bg-gray-50');
-                memberItem.classList.add('assigned-member-item', 'bg-gray-50');
+                memberItem.classList.remove('available-member-item', 'border', 'border-gray-200', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-700');
+                memberItem.classList.add('assigned-member-item', 'bg-gray-50', 'dark:bg-gray-700');
 
                 // Add remove button if it doesn't exist
                 if (!memberItem.querySelector('.remove-btn')) {
@@ -145,10 +145,10 @@
                 if (memberItem) {
                     const checkbox = memberItem.querySelector('input[type="checkbox"]');
                     checkbox.checked = false;
-                    checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded available-checkbox';
+                    checkbox.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded available-checkbox';
 
-                    memberItem.classList.remove('assigned-member-item', 'bg-gray-50');
-                    memberItem.classList.add('available-member-item', 'border', 'border-gray-200', 'hover:bg-gray-50');
+                    memberItem.classList.remove('assigned-member-item', 'bg-gray-50', 'dark:bg-gray-700');
+                    memberItem.classList.add('available-member-item', 'border', 'border-gray-200', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-700');
 
                     const removeBtn = memberItem.querySelector('.remove-btn');
                     if (removeBtn) removeBtn.remove();

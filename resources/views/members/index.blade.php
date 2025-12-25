@@ -2,8 +2,8 @@
     <div class="space-y-4 md:space-y-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-xl md:text-2xl text-gray-900">Member Management</h1>
-                <p class="text-sm md:text-base text-gray-500">Manage church member records</p>
+                <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Member Management</h1>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage church member records</p>
             </div>
             @php
                 try {
@@ -20,9 +20,9 @@
             </a>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="text-lg font-semibold">Member List</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold dark:text-gray-200">Member List</h2>
             </div>
             <div class="p-6">
                 <form method="GET" action="{{ route('members.index') }}" id="filter-form">
@@ -36,11 +36,11 @@
                                 name="search"
                                 value="{{ request('search') }}"
                                 placeholder="Search by name or email..."
-                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm"
+                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
                                 id="search-input"
                             />
                         </div>
-                        <select name="status" class="w-full sm:w-48 h-9 px-3 py-2 rounded-md border border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm" id="status-filter">
+                        <select name="status" class="w-full sm:w-48 h-9 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" id="status-filter">
                             <option value="all" {{ request('status') === 'all' || !request('status') ? 'selected' : '' }}>All Status</option>
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -50,72 +50,72 @@
                     </div>
                 </form>
 
-                <div class="border rounded-lg overflow-x-auto">
+                <div class="border dark:border-gray-700 rounded-lg overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px]">Name</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[80px]">Age</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[150px] hidden sm:table-cell">Contact</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px] hidden xl:table-cell">Membership Type</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">Category</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px] hidden md:table-cell">Role</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">Status</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px] hidden lg:table-cell">Baptismal Status</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">Actions</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[150px]">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[80px]">Age</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[150px] hidden sm:table-cell">Contact</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden xl:table-cell">Membership Type</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Category</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden md:table-cell">Role</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden lg:table-cell">Baptismal Status</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($members ?? [] as $member)
                                 <tr>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $member->full_name }}</p>
-                                            <p class="text-xs text-gray-500">{{ $member->family_name ?? 'N/A' }}</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-gray-200">{{ $member->full_name }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $member->family_name ?? 'N/A' }}</p>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                         {{ $member->age ?? 'N/A' }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
                                         <div>
-                                            <p class="text-sm text-gray-900">{{ $member->phone ?? 'N/A' }}</p>
-                                            <p class="text-xs text-gray-500 truncate max-w-[150px]">{{ $member->email ?? 'N/A' }}</p>
+                                            <p class="text-sm text-gray-900 dark:text-gray-200">{{ $member->phone ?? 'N/A' }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]">{{ $member->email ?? 'N/A' }}</p>
                                         </div>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap hidden xl:table-cell">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_type ?? 'community') === 'community') bg-indigo-100 text-indigo-800
-                                            @else bg-teal-100 text-teal-800 @endif">
+                                            @if(($member->membership_type ?? 'community') === 'community') bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300
+                                            @else bg-teal-100 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300 @endif">
                                             {{ ucfirst($member->membership_type ?? 'community') }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_category ?? 'adult') === 'adult') bg-blue-100 text-blue-800
-                                            @elseif(($member->membership_category ?? 'adult') === 'youth') bg-purple-100 text-purple-800
-                                            @elseif(($member->membership_category ?? 'adult') === 'child') bg-pink-100 text-pink-800
-                                            @else bg-green-100 text-green-800 @endif">
+                                            @if(($member->membership_category ?? 'adult') === 'adult') bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300
+                                            @elseif(($member->membership_category ?? 'adult') === 'youth') bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300
+                                            @elseif(($member->membership_category ?? 'adult') === 'child') bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-300
+                                            @else bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 @endif">
                                             {{ $member->membership_category === 'university-student' ? 'student' : ucfirst($member->membership_category ?? 'adult') }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 hidden md:table-cell">
                                         {{ $member->role_in_church ?? 'Member' }}
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_status ?? 'active') === 'active') bg-green-100 text-green-800
-                                            @elseif(($member->membership_status ?? 'active') === 'inactive') bg-gray-100 text-gray-800
-                                            @elseif(($member->membership_status ?? 'active') === 'transferred') bg-blue-100 text-blue-800
-                                            @else bg-red-100 text-red-800 @endif">
+                                            @if(($member->membership_status ?? 'active') === 'active') bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
+                                            @elseif(($member->membership_status ?? 'active') === 'inactive') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                                            @elseif(($member->membership_status ?? 'active') === 'transferred') bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300
+                                            @else bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 @endif">
                                             {{ ucfirst($member->membership_status ?? 'active') }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap hidden lg:table-cell">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->baptism_status ?? 'not-baptized') === 'baptized') bg-green-100 text-green-800
-                                            @elseif(($member->baptism_status ?? 'not-baptized') === 'pending') bg-yellow-100 text-yellow-800
-                                            @else bg-orange-100 text-orange-800 @endif">
+                                            @if(($member->baptism_status ?? 'not-baptized') === 'baptized') bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
+                                            @elseif(($member->baptism_status ?? 'not-baptized') === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300
+                                            @else bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300 @endif">
                                             @if(($member->baptism_status ?? 'not-baptized') === 'baptized') Baptized
                                             @elseif(($member->baptism_status ?? 'not-baptized') === 'not-baptized') Not Baptized
                                             @else Pending @endif
@@ -130,7 +130,7 @@
                                                     $viewUrl = url('/members/' . $member->member_id);
                                                 }
                                             @endphp
-                                            <a href="{{ $viewUrl }}" class="text-blue-600 hover:text-blue-900 p-1">
+                                            <a href="{{ $viewUrl }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 p-1">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -144,7 +144,7 @@
                                                         $editUrl = url('/members/' . $member->member_id . '/edit');
                                                     }
                                                 @endphp
-                                                <a href="{{ $editUrl }}" class="text-gray-600 hover:text-gray-900 p-1 hidden sm:inline">
+                                                <a href="{{ $editUrl }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 p-1 hidden sm:inline">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
@@ -155,8 +155,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                                        No members found. <a href="{{ $addMemberUrl }}" class="text-blue-600 hover:text-blue-900">Add your first member</a>.
+                                    <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        No members found. <a href="{{ $addMemberUrl }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">Add your first member</a>.
                                     </td>
                                 </tr>
                             @endforelse
@@ -165,7 +165,7 @@
                 </div>
 
                 <div class="mt-4 flex justify-between items-center">
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
                         Showing {{ $members ? $members->count() : 0 }} members
                     </p>
                 </div>

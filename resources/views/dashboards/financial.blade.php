@@ -1,16 +1,16 @@
 <x-app-layout>
     <div class="space-y-6">
         <div>
-            <h1 class="text-xl md:text-2xl text-gray-900">Financial Secretary Dashboard</h1>
-            <p class="text-sm md:text-base text-gray-500">Manage and track church finances</p>
+            <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Financial Secretary Dashboard</h1>
+            <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage and track church finances</p>
         </div>
 
         {{-- Summary Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Total Contributions</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Contributions</p>
                         <p class="text-2xl font-bold text-green-600">₦{{ number_format($totalContributions, 2) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
@@ -21,10 +21,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">This Month</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">This Month</p>
                         <p class="text-2xl font-bold text-blue-600">₦{{ number_format($monthlyContributions, 2) }}</p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -35,10 +35,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Categories</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Categories</p>
                         <p class="text-2xl font-bold text-purple-600">{{ $categories->count() }}</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
@@ -49,10 +49,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Recent Transactions</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Recent Transactions</p>
                         <p class="text-2xl font-bold text-orange-600">{{ $recentContributions->count() }}</p>
                     </div>
                     <div class="p-3 bg-orange-100 rounded-lg">
@@ -69,50 +69,50 @@
 
         {{-- Categories & Recent Contributions --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Category Totals</h2>
-                    <a href="{{ route('finance.categories') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Category Totals</h2>
+                    <a href="{{ route('finance.categories') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                         Manage Categories
                     </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($categories as $category)
-                        <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                        <div class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
                             <div>
-                                <h4 class="font-medium text-gray-900">{{ $category->name }}</h4>
-                                <p class="text-sm text-gray-600">{{ $category->contributions_count }} contributions</p>
+                                <h4 class="font-medium text-gray-900 dark:text-gray-200">{{ $category->name }}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $category->contributions_count }} contributions</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-semibold text-gray-900">₦{{ number_format($category->contributions_sum_amount, 2) }}</span>
+                                <span class="font-semibold text-gray-900 dark:text-gray-200">₦{{ number_format($category->contributions_sum_amount, 2) }}</span>
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500 text-center py-4">No categories found</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-4">No categories found</p>
                     @endforelse
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Recent Contributions</h2>
-                    <a href="{{ route('finance.contributions') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Contributions</h2>
+                    <a href="{{ route('finance.contributions') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                         Record Contributions
                     </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($recentContributions as $contribution)
-                        <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                        <div class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
                             <div>
-                                <h4 class="font-medium text-gray-900">{{ $contribution->member?->name ?? 'N/A' }}</h4>
-                                <p class="text-sm text-gray-600">{{ $contribution->category?->name ?? 'N/A' }} - {{ $contribution->date->format('M j, Y') }}</p>
+                                <h4 class="font-medium text-gray-900 dark:text-gray-200">{{ $contribution->member?->name ?? 'N/A' }}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $contribution->category?->name ?? 'N/A' }} - {{ $contribution->date->format('M j, Y') }}</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-semibold text-gray-900">₦{{ number_format($contribution->amount, 2) }}</span>
+                                <span class="font-semibold text-gray-900 dark:text-gray-200">₦{{ number_format($contribution->amount, 2) }}</span>
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500 text-center py-4">No recent contributions</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-4">No recent contributions</p>
                     @endforelse
                 </div>
             </div>

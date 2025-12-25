@@ -2,8 +2,8 @@
     <div class="space-y-4 md:space-y-6">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-xl md:text-2xl text-gray-900">Church Clerk Dashboard</h1>
-                <p class="text-sm md:text-base text-gray-500">Manage member records and registrations</p>
+                <h1 class="text-xl md:text-2xl text-gray-900 dark:text-gray-100">Church Clerk Dashboard</h1>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">Manage member records and registrations</p>
             </div>
             <a href="{{ route('members.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,10 +15,10 @@
 
         {{-- Summary Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Total Members</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Members</p>
                         <p class="text-2xl font-bold text-blue-600">{{ number_format($totalMembers) }}</p>
                     </div>
                     <div class="p-3 bg-blue-100 rounded-lg">
@@ -29,10 +29,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Active Members</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Members</p>
                         <p class="text-2xl font-bold text-green-600">{{ number_format($activeMembers) }}</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
@@ -43,10 +43,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">New This Month</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">New This Month</p>
                         <p class="text-2xl font-bold text-purple-600">{{ number_format($newMembersThisMonth) }}</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
@@ -57,10 +57,10 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Upcoming Birthdays</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Upcoming Birthdays</p>
                         <p class="text-2xl font-bold text-orange-600">{{ $upcomingBirthdays->count() }}</p>
                     </div>
                     <div class="p-3 bg-orange-100 rounded-lg">
@@ -75,107 +75,107 @@
         {{-- Recent Activity --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {{-- Recent Members --}}
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Recent Members</h2>
-                    <a href="{{ route('members.index') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Members</h2>
+                    <a href="{{ route('members.index') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                         View All
                     </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($recentMembers as $member)
-                        <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                        <div class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
                             <div>
-                                <h4 class="font-medium text-gray-900">{{ $member->first_name }} {{ $member->last_name }}</h4>
-                                <p class="text-sm text-gray-600">Joined {{ $member->membership_date->format('M j, Y') }}</p>
+                                <h4 class="font-medium text-gray-900 dark:text-gray-200">{{ $member->first_name }} {{ $member->last_name }}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Joined {{ $member->membership_date->format('M j, Y') }}</p>
                             </div>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                @if($member->membership_status === 'active') bg-green-100 text-green-800
-                                @else bg-gray-100 text-gray-800 @endif">
+                                @if($member->membership_status === 'active') bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
+                                @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 @endif">
                                 {{ ucfirst($member->membership_status) }}
                             </span>
                         </div>
                     @empty
-                        <p class="text-gray-500 text-center py-4">No recent members</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-4">No recent members</p>
                     @endforelse
                 </div>
             </div>
 
             {{-- Upcoming Birthdays --}}
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Upcoming Birthdays</h2>
-                    <a href="{{ route('members.index') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Upcoming Birthdays</h2>
+                    <a href="{{ route('members.index') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium">
                         View All
                     </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($upcomingBirthdays as $member)
-                        <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                        <div class="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
                             <div>
-                                <h4 class="font-medium text-gray-900">{{ $member->first_name }} {{ $member->last_name }}</h4>
-                                <p class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($member->date_of_birth)->format('M j') }}</p>
+                                <h4 class="font-medium text-gray-900 dark:text-gray-200">{{ $member->first_name }} {{ $member->last_name }}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($member->date_of_birth)->format('M j') }}</p>
                             </div>
                             <div class="text-right">
-                                <span class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($member->date_of_birth)->age }} years old</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">{{ \Carbon\Carbon::parse($member->date_of_birth)->age }} years old</span>
                             </div>
                         </div>
                     @empty
-                        <p class="text-gray-500 text-center py-4">No upcoming birthdays</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-center py-4">No upcoming birthdays</p>
                     @endforelse
                 </div>
             </div>
         </div>
 
         {{-- Quick Actions --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a href="{{ route('members.create') }}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                <a href="{{ route('members.create') }}" class="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
                     <div class="p-2 bg-blue-100 rounded-lg">
                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-medium text-gray-900">Add Member</h3>
-                        <p class="text-sm text-gray-600">Register new member</p>
+                        <h3 class="font-medium text-gray-900 dark:text-gray-200">Add Member</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Register new member</p>
                     </div>
                 </a>
 
-                <a href="{{ route('members.index') }}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
+                <a href="{{ route('members.index') }}" class="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-500 dark:hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
                     <div class="p-2 bg-green-100 rounded-lg">
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-medium text-gray-900">View Members</h3>
-                        <p class="text-sm text-gray-600">Browse member list</p>
+                        <h3 class="font-medium text-gray-900 dark:text-gray-200">View Members</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Browse member list</p>
                     </div>
                 </a>
 
-                <a href="{{ route('members.transfers') }}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                <a href="{{ route('members.transfers') }}" class="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-purple-500 dark:hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                     <div class="p-2 bg-purple-100 rounded-lg">
                         <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-medium text-gray-900">Transfer Requests</h3>
-                        <p class="text-sm text-gray-600">Manage transfers</p>
+                        <h3 class="font-medium text-gray-900 dark:text-gray-200">Transfer Requests</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Manage transfers</p>
                     </div>
                 </a>
 
-                <a href="{{ route('reports.members') }}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-colors">
+                <a href="{{ route('reports.members') }}" class="flex items-center gap-3 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-orange-500 dark:hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                     <div class="p-2 bg-orange-100 rounded-lg">
                         <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-medium text-gray-900">Reports</h3>
-                        <p class="text-sm text-gray-600">Generate reports</p>
+                        <h3 class="font-medium text-gray-900 dark:text-gray-200">Reports</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Generate reports</p>
                     </div>
                 </a>
             </div>
