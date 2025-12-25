@@ -58,11 +58,13 @@
         {{-- User Dropdown --}}
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden border border-white">
                     @if($user->avatar ?? false)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
                     @else
-                        <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-8 h-8 object-contain" />
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
                     @endif
                 </div>
                 <span class="hidden sm:inline text-sm font-medium dark:text-gray-300">{{ $displayName }}</span>
