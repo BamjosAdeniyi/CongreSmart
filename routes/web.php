@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('sabbath-school')->name('sabbath-school.')->controller(App\Http\Controllers\SabbathSchoolController::class)->group(function () {
         Route::get('/{class}/attendance', 'attendance')->name('attendance');
+        Route::get('/{class}/attendance/data', 'getAttendanceDataForDate')->name('attendance.data');
         Route::post('/{class}/attendance', 'storeAttendance')->name('attendance.store');
         Route::get('/{class}/assign-members', 'assignMembers')->name('assign-members');
         Route::post('/{class}/assign-members', 'updateMemberAssignments')->name('assign-members.update');

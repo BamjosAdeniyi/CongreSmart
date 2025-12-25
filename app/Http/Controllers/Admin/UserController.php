@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
@@ -27,6 +28,7 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|string|in:pastor,clerk,superintendent,coordinator,financial,ict,welfare',
             'active' => 'boolean'
         ]);
@@ -40,12 +42,12 @@ class UserController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
-            'password' => Hash::make('password123'), // Default password
+            'password' => Hash::make($request->password),
             'role' => $request->role,
             'active' => $request->active ?? true,
         ]);
 
-        return back()->with('success', 'User created successfully. Default password: password123');
+        return back()->with('success', 'User created successfully.');
     }
 
     public function show(User $user)

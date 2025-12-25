@@ -14,18 +14,24 @@
             </div>
         </div>
 
-        @if($existingAttendance)
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    <div>
-                        <h3 class="text-sm font-medium text-yellow-800">Attendance already taken today</h3>
-                        <p class="text-sm text-yellow-700 mt-1">
-                            Attendance for {{ $existingAttendance->date->format('M j, Y') }} has already been recorded.
-                            You can update it below or create a new record for a different date.
-                        </p>
+        {{-- General Error Display --}}
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">There were {{ $errors->count() }} errors with your submission</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <ul role="list" class="list-disc pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,22 +45,16 @@
                     <div>
                         <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Date *</label>
                         <input type="date" id="date" name="date"
-                               value="{{ $existingAttendance ? $existingAttendance->date->format('Y-m-d') : today()->format('Y-m-d') }}"
+                               value="{{ old('date', today()->format('Y-m-d')) }}"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('date') border-red-500 @enderror" required>
-                        @error('date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <div>
                         <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                         <input type="text" id="notes" name="notes"
-                               value="{{ $existingAttendance ? $existingAttendance->notes : '' }}"
+                               value="{{ old('notes') }}"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('notes') border-red-500 @enderror"
                                placeholder="Optional notes about this session">
-                        @error('notes')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
                     </div>
                 </div>
 
@@ -73,13 +73,13 @@
                                 <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox"
-                                               id="member_{{ $member->id }}"
+                                               id="member_{{ $member->member_id }}"
                                                name="present_members[]"
-                                               value="{{ $member->id }}"
-                                               {{ $existingAttendance && in_array($member->id, json_decode($existingAttendance->present_members, true)) ? 'checked' : '' }}
+                                               value="{{ $member->member_id }}"
+                                               {{ ($existingAttendance->get($member->member_id)) ? 'checked' : '' }}
                                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                         <div>
-                                            <label for="member_{{ $member->id }}" class="font-medium cursor-pointer">
+                                            <label for="member_{{ $member->member_id }}" class="font-medium cursor-pointer">
                                                 {{ $member->first_name }} {{ $member->last_name }}
                                             </label>
                                             @if($member->phone)
@@ -116,7 +116,7 @@
                 <button type="submit"
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors"
                         {{ $members->count() == 0 ? 'disabled' : '' }}>
-                    {{ $existingAttendance ? 'Update Attendance' : 'Record Attendance' }}
+                    {{ $existingAttendance->isNotEmpty() ? 'Update Attendance' : 'Record Attendance' }}
                 </button>
             </div>
         </form>
@@ -132,5 +132,22 @@
             const checkboxes = document.querySelectorAll('input[name="present_members[]"]');
             checkboxes.forEach(checkbox => checkbox.checked = false);
         }
+
+        document.getElementById('date').addEventListener('change', function() {
+            const date = this.value;
+            const classId = '{{ $class->id }}';
+            const url = `/sabbath-school/${classId}/attendance/data?date=${date}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const checkboxes = document.querySelectorAll('input[name="present_members[]"]');
+                    checkboxes.forEach(checkbox => {
+                        const memberId = checkbox.value;
+                        checkbox.checked = !!data[memberId];
+                    });
+                })
+                .catch(error => console.error('Error fetching attendance data:', error));
+        });
     </script>
 </x-app-layout>

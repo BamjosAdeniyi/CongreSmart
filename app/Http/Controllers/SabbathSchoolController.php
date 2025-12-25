@@ -205,12 +205,29 @@ class SabbathSchoolController extends Controller
         $members = $class->members()->where('membership_status', '!=', 'transferred')->orderBy('first_name')->get();
         $today = today();
 
-        // Check if attendance already taken today
+        // Eager load existing attendance for the given date to check presence
         $existingAttendance = AttendanceRecord::where('class_id', $class->id)
             ->whereDate('date', $today)
-            ->first();
+            ->pluck('present', 'member_id');
 
         return view('sabbath-school.attendance', compact('class', 'members', 'existingAttendance'));
+    }
+
+    public function getAttendanceDataForDate(Request $request, SabbathSchoolClass $class)
+    {
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'Invalid date format.'], 400);
+        }
+
+        $attendanceData = AttendanceRecord::where('class_id', $class->id)
+            ->whereDate('date', $request->date)
+            ->pluck('present', 'member_id');
+
+        return response()->json($attendanceData);
     }
 
     public function storeAttendance(Request $request, SabbathSchoolClass $class)
@@ -222,7 +239,7 @@ class SabbathSchoolController extends Controller
 
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
-            'present_members' => 'required|array',
+            'present_members' => 'nullable|array',
             'present_members.*' => 'exists:members,member_id',
             'notes' => 'nullable|string',
         ]);
@@ -239,6 +256,7 @@ class SabbathSchoolController extends Controller
 
             // Get all members in the class, excluding transferred ones
             $classMembers = $class->members()->where('membership_status', '!=', 'transferred')->pluck('member_id')->toArray();
+            $presentMembers = $request->present_members ?? [];
 
             // Record attendance for each member
             foreach ($classMembers as $memberId) {
@@ -247,7 +265,7 @@ class SabbathSchoolController extends Controller
                     'member_id' => $memberId,
                     'class_id' => $class->id,
                     'date' => $request->date,
-                    'present' => in_array($memberId, $request->present_members),
+                    'present' => in_array($memberId, $presentMembers),
                     'notes' => $request->notes,
                     'marked_by' => Auth::id(),
                 ]);
@@ -289,11 +307,8 @@ class SabbathSchoolController extends Controller
         }
 
         $assignedMembers = $class->members()->where('membership_status', '!=', 'transferred')->get();
-        $availableMembers = Member::where('membership_status', '!=', 'transferred') // Exclude transferred members
-            ->where(function ($query) use ($class) {
-                $query->where('sabbath_school_class_id', '!=', $class->id)
-                      ->orWhereNull('sabbath_school_class_id');
-            })
+        $availableMembers = Member::where('membership_status', '!=', 'transferred')
+            ->whereNull('sabbath_school_class_id')
             ->orderBy('first_name')
             ->get();
 

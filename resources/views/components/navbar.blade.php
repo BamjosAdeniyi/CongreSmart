@@ -58,11 +58,11 @@
         {{-- User Dropdown --}}
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center overflow-hidden">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
                     @if($user->avatar ?? false)
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-full h-full object-cover" />
                     @else
-                        <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-6 h-6 object-contain" />
+                        <img src="{{ asset('images/sda-logo.png') }}" alt="SDA Logo" class="w-8 h-8 object-contain" />
                     @endif
                 </div>
                 <span class="hidden sm:inline text-sm font-medium">{{ $displayName }}</span>
@@ -72,7 +72,7 @@
             </button>
 
             {{-- Dropdown Menu --}}
-            <div x-show="open" 
+            <div x-show="open"
                  @click.away="open = false"
                  x-transition:enter="transition ease-out duration-100"
                  x-transition:enter-start="transform opacity-0 scale-95"

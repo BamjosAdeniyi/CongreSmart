@@ -132,7 +132,7 @@
         <div class="bg-white rounded-xl border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900">Recent Attendance</h2>
-                <a href="{{ route('sabbath-school.reports') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                <a href="{{ route('reports.attendance') }}" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
                     View Reports
                 </a>
             </div>
@@ -140,8 +140,8 @@
                 @foreach($recentAttendance->take(5) as $record)
                     <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
                         <div>
-                            <h4 class="font-medium text-gray-900">{{ $record->member->first_name }} {{ $record->member->last_name }}</h4>
-                            <p class="text-sm text-gray-600">{{ $record->class->name }} - {{ $record->date->format('M j, Y') }}</p>
+                            <h4 class="font-medium text-gray-900">{{ $record->member?->first_name }} {{ $record->member?->last_name }}</h4>
+                            <p class="text-sm text-gray-600">{{ $record->class?->name }} - {{ $record->date?->format('M j, Y') }}</p>
                         </div>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                             @if($record->present) bg-green-100 text-green-800

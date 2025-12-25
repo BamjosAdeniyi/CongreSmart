@@ -44,7 +44,7 @@ class DashboardController extends Controller
             $sql = <<<SQL
 SELECT member_id
 FROM (
-  SELECT 
+  SELECT
     member_id,
     present,
     ROW_NUMBER() OVER (PARTITION BY member_id ORDER BY date DESC) rn
@@ -85,7 +85,7 @@ SQL;
 
             // Works across year boundary by comparing month/day
             return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
-                $today->format('m-d'), 
+                $today->format('m-d'),
                 $end->format('m-d')
             ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth']);
         });
@@ -146,7 +146,7 @@ SQL;
         $totalMembers = Cache::remember('dashboard.clerk.total_members', 30, fn() => Member::count());
 
         // Active members
-        $activeMembers = Cache::remember('dashboard.clerk.active_members', 30, fn() => 
+        $activeMembers = Cache::remember('dashboard.clerk.active_members', 30, fn() =>
             Member::where('membership_status', 'active')->count()
         );
 
@@ -178,7 +178,7 @@ SQL;
 
         return view('dashboards.clerk', compact(
             'totalMembers',
-            'activeMembers', 
+            'activeMembers',
             'newMembersThisMonth',
             'upcomingBirthdays',
             'recentMembers'
@@ -226,38 +226,32 @@ SQL;
 
     public function coordinator(Request $request)
     {
-        // Coordinator's classes
-        $myClasses = Cache::remember('dashboard.coordinator.my_classes', 30, function () {
-            return \App\Models\SabbathSchoolClass::where('coordinator_id', Auth::id())
-                ->with(['members', 'attendance' => function($query) {
-                    $query->latest('date')->take(10);
-                }])
+        $myClassIds = Cache::remember('dashboard.coordinator.my_class_ids', 30, function () {
+            return \App\Models\SabbathSchoolClass::where('coordinator_id', Auth::id())->pluck('id');
+        });
+
+        $myClasses = Cache::remember('dashboard.coordinator.my_classes', 30, function () use ($myClassIds) {
+            return \App\Models\SabbathSchoolClass::whereIn('id', $myClassIds)
                 ->withCount('members')
                 ->get();
         });
 
-        // Total members in coordinator's classes
         $totalMembers = $myClasses->sum('members_count');
 
-        // Average attendance across coordinator's classes
-        $avgAttendance = $myClasses->avg(function($class) {
-            $attendance = $class->attendance;
-            if ($attendance->isEmpty()) return 0;
-            $present = $attendance->where('present', true)->count();
-            return ($present / $attendance->count()) * 100;
+        $avgAttendance = Cache::remember('dashboard.coordinator.avg_attendance', 30, function () use ($myClassIds) {
+            $totalRecords = AttendanceRecord::whereIn('class_id', $myClassIds)->count();
+            if ($totalRecords === 0) return 0;
+            $presentRecords = AttendanceRecord::whereIn('class_id', $myClassIds)->where('present', true)->count();
+            return round(($presentRecords / $totalRecords) * 100);
         });
 
-        // Recent attendance records
-        $recentAttendance = Cache::remember('dashboard.coordinator.recent_attendance', 30, function () {
-            return \App\Models\SabbathSchoolClass::where('coordinator_id', Auth::id())
-                ->with(['attendance' => function($query) {
-                    $query->latest('date')->take(5);
-                }])
-                ->get()
-                ->pluck('attendance')
-                ->flatten()
-                ->sortByDesc('date')
-                ->take(10);
+        $recentAttendance = Cache::remember('dashboard.coordinator.recent_attendance', 30, function () use ($myClassIds) {
+            return AttendanceRecord::whereIn('class_id', $myClassIds)
+                ->select('date', DB::raw('SUM(present) as present_count'), DB::raw('COUNT(*) as total_count'))
+                ->groupBy('date')
+                ->orderBy('date', 'desc')
+                ->limit(5)
+                ->get();
         });
 
         return view('dashboards.coordinator', compact(
@@ -316,8 +310,8 @@ SQL;
     {
         // Similar to clerk but focused on welfare aspects
         $totalMembers = Cache::remember('dashboard.welfare.total_members', 30, fn() => Member::count());
-        
-        $activeMembers = Cache::remember('dashboard.welfare.active_members', 30, fn() => 
+
+        $activeMembers = Cache::remember('dashboard.welfare.active_members', 30, fn() =>
             Member::where('membership_status', 'active')->count()
         );
 

@@ -1,5 +1,10 @@
 <x-app-layout>
     <div class="space-y-6">
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4" role="alert">
+                <span class="font-medium">Success!</span> {{ session('success') }}
+            </div>
+        @endif
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <a href="{{ route('sabbath-school.index') }}" class="text-gray-400 hover:text-gray-600">
@@ -173,10 +178,10 @@
                                     </div>
                                     <div class="text-right">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if($presentCount / $totalMembers >= 0.8) bg-green-100 text-green-800
-                                            @elseif($presentCount / $totalMembers >= 0.6) bg-yellow-100 text-yellow-800
+                                            @if($totalMembers > 0 && ($presentCount / $totalMembers) >= 0.8) bg-green-100 text-green-800
+                                            @elseif($totalMembers > 0 && ($presentCount / $totalMembers) >= 0.6) bg-yellow-100 text-yellow-800
                                             @else bg-red-100 text-red-800 @endif">
-                                            {{ round(($presentCount / $totalMembers) * 100) }}%
+                                            {{ $totalMembers > 0 ? round(($presentCount / $totalMembers) * 100) : 0 }}%
                                         </span>
                                     </div>
                                 </div>
