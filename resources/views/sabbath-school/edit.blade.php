@@ -8,7 +8,7 @@
             </a>
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Edit Sabbath School Class</h1>
-                <p class="text-gray-600">Update class information</p>
+                <p class="dark:text-gray-400 text-gray-600">Update class information</p>
             </div>
         </div>
 
@@ -18,9 +18,9 @@
 
             <div class="space-y-6">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Class Name *</label>
+                    <label for="name" class="block text-sm font-medium text-gray-700  mb-2">Class Name *</label>
                     <input type="text" id="name" name="name" value="{{ old('name', $class->name) }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
+                           class="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
                            placeholder="e.g., Young Adults Class" required>
                     @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -30,7 +30,7 @@
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                     <textarea id="description" name="description" rows="3"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror"
+                              class="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror"
                               placeholder="Brief description of the class">{{ old('description', $class->description) }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -40,7 +40,7 @@
                 <div>
                     <label for="coordinator_id" class="block text-sm font-medium text-gray-700 mb-2">Coordinator *</label>
                     <select id="coordinator_id" name="coordinator_id"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('coordinator_id') border-red-500 @enderror" required>
+                            class="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('coordinator_id') border-red-500 @enderror" required>
                         <option value="">Select a coordinator</option>
                         @foreach($coordinators as $coordinator)
                             <option value="{{ $coordinator->id }}" {{ old('coordinator_id', $class->coordinator_id) == $coordinator->id ? 'selected' : '' }}>

@@ -87,7 +87,7 @@ SQL;
             return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
                 $today->format('m-d'),
                 $end->format('m-d')
-            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth']);
+            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
         });
 
         $alerts = [
@@ -133,7 +133,8 @@ SQL;
             'monthlyIncome',
             'alerts',
             'attendanceTrend',
-            'financialBreakdown'
+            'financialBreakdown',
+            'upcomingBirthdays'
         ));
     }
 
@@ -216,11 +217,23 @@ SQL;
             })->take(3);
         });
 
+        // Upcoming birthdays (next 7 days)
+        $upcomingBirthdays = Cache::remember('dashboard.superintendent.upcoming_birthdays', 30, function () {
+            $today = Carbon::today();
+            $end   = $today->copy()->addDays(7);
+
+            return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
+                $today->format('m-d'),
+                $end->format('m-d')
+            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+        });
+
         return view('dashboards.superintendent', compact(
             'totalClasses',
             'totalEnrolled',
             'avgAttendance',
-            'lowAttendanceClasses'
+            'lowAttendanceClasses',
+            'upcomingBirthdays'
         ));
     }
 
@@ -307,6 +320,17 @@ SQL;
                         ->get();
         });
 
+        // Upcoming birthdays (next 7 days)
+        $upcomingBirthdays = Cache::remember('dashboard.welfare.upcoming_birthdays', 30, function () {
+            $today = Carbon::today();
+            $end   = $today->copy()->addDays(7);
+
+            return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
+                $today->format('m-d'),
+                $end->format('m-d')
+            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+        });
+
         // Define placeholder variables
         $activeCases = 0;
         $membersHelped = 0;
@@ -320,7 +344,8 @@ SQL;
             'activeCases',
             'membersHelped',
             'assistanceTypes',
-            'monthlyAssistance'
+            'monthlyAssistance',
+            'upcomingBirthdays'
         ));
     }
 

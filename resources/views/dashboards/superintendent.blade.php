@@ -180,5 +180,8 @@
                 </a>
             </div>
         </div>
+
+        {{-- Birthday List --}}
+        <x-birthday-list :birthdays="$upcomingBirthdays" />
     </div>
 </x-app-layout>
