@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DisciplinaryController;
 
 // Landing page - redirect authenticated users to their dashboard
 Route::get('/', function () {
@@ -171,5 +172,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/logs', function () {
             return view('admin.logs');
         })->name('logs')->middleware('role:ict');
+    });
+
+    // Disciplinary Routes (Pastor and Clerk only)
+    Route::middleware(['role:pastor,clerk'])->group(function () {
+        Route::resource('disciplinary', DisciplinaryController::class);
     });
 });

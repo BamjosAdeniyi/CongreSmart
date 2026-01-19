@@ -29,7 +29,7 @@ class MemberStoreRequest extends FormRequest
             'last_name' => 'required|string|max:255',
             'family_name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
-            'phone' => 'required|string|max:50',
+            'phone' => ['required', 'string', 'regex:/^(?:\+234|0)[789][01]\d{8}$/'],
             'email' => 'nullable|email|max:255|unique:members,email',
             'address' => 'required|string',
             'date_of_birth' => 'required|date|before:today',

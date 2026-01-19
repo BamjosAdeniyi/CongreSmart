@@ -39,7 +39,6 @@
                                 type="text"
                                 value="{{ old('first_name', $member->first_name) }}"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             />
                             @error('first_name')
                                 <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -53,7 +52,6 @@
                                 type="text"
                                 value="{{ old('last_name', $member->last_name) }}"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             />
                             @error('last_name')
                                 <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -67,7 +65,6 @@
                                 type="text"
                                 value="{{ old('family_name', $member->family_name) }}"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             />
                             @error('family_name')
                                 <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -82,7 +79,6 @@
                                 id="gender"
                                 name="gender"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             >
                                 <option value="">Select gender</option>
                                 <option value="male" {{ old('gender', $member->gender) === 'male' ? 'selected' : '' }}>Male</option>
@@ -100,7 +96,6 @@
                                 type="date"
                                 value="{{ old('date_of_birth', $member->date_of_birth ? \Carbon\Carbon::parse($member->date_of_birth)->format('Y-m-d') : '') }}"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             />
                             @error('date_of_birth')
                                 <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -117,7 +112,6 @@
                                 type="tel"
                                 value="{{ old('phone', $member->phone) }}"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             />
                             @error('phone')
                                 <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -145,7 +139,6 @@
                             name="address"
                             rows="3"
                             class="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                            required
                         >{{ old('address', $member->address) }}</textarea>
                         @error('address')
                             <p class="text-red-600 text-xs">{{ $message }}</p>
@@ -167,7 +160,6 @@
                                 id="membership_type"
                                 name="membership_type"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             >
                                 <option value="">Select type</option>
                                 <option value="community" {{ old('membership_type', $member->membership_type) === 'community' ? 'selected' : '' }}>Community Member</option>
@@ -183,7 +175,6 @@
                                 id="membership_category"
                                 name="membership_category"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             >
                                 <option value="">Select category</option>
                                 <option value="adult" {{ old('membership_category', $member->membership_category) === 'adult' ? 'selected' : '' }}>Adult</option>
@@ -219,7 +210,6 @@
                                 id="baptism_status"
                                 name="baptism_status"
                                 class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                                required
                             >
                                 <option value="">Select status</option>
                                 <option value="baptized" {{ old('baptism_status', $member->baptism_status) === 'baptized' ? 'selected' : '' }}>Baptized</option>
@@ -253,7 +243,6 @@
                             type="date"
                             value="{{ old('membership_date', $member->membership_date ? \Carbon\Carbon::parse($member->membership_date)->format('Y-m-d') : '') }}"
                             class="w-full px-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-                            required
                         />
                         @error('membership_date')
                             <p class="text-red-600 text-xs">{{ $message }}</p>

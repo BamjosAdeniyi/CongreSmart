@@ -146,7 +146,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400">Manage transfers</p>
                 </a>
 
-                <a href="{{ route('reports.members') }}" class="w-full text-left p-3 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 rounded-lg transition-colors block">
+                <a href="{{ route('reports.members') }}" class="w-full text-left p-3 bg-white border border-gray-200 dark:border-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/40 rounded-lg transition-colors block">
                     <p class="text-sm font-medium text-orange-800 dark:text-orange-300">Reports</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Generate reports</p>
                 </a>
