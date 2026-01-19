@@ -39,6 +39,10 @@ class ReportsController extends Controller
             'total_members' => $members->count(),
             'active_members' => $members->where('membership_status', 'active')->count(),
             'inactive_members' => $members->where('membership_status', 'inactive')->count(),
+            'baptized_members' => $members->where('baptism_status', 'baptized')->count(),
+            'not_baptized_members' => $members->where('baptism_status', '!=', 'baptized')->count(),
+            'community_members' => $members->where('membership_type', 'community')->count(),
+            'student_members' => $members->where('membership_type', 'student')->count(),
             'by_gender' => [
                 'male' => $members->where('gender', 'male')->count(),
                 'female' => $members->where('gender', 'female')->count(),

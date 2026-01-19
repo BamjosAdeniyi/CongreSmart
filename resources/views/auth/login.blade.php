@@ -42,10 +42,12 @@
                                type="email"
                                value="{{ old('email') }}"
                                placeholder="your.email@church.com"
-                               required
                                autofocus
                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
                     </div>
+                    @error('email')
+                        <p class="text-red-600 dark:text-red-400 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Password --}}
@@ -59,19 +61,12 @@
                                name="password"
                                type="password"
                                placeholder="••••••••"
-                               required
                                class="w-full pl-10 pr-3 py-2 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm">
                     </div>
+                    @error('password')
+                        <p class="text-red-600 dark:text-red-400 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
-
-                {{-- Validation Errors --}}
-                @if ($errors->any())
-                    <div class="text-red-600 dark:text-red-400 text-sm">
-                        @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
-                        @endforeach
-                    </div>
-                @endif
 
                 {{-- Login Button --}}
                 <button type="submit"
@@ -88,37 +83,37 @@
             </div>
 
             <div id="demoAccounts" class="hidden mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg space-y-2">
-                <p class="text-sm font-medium mb-2 dark:text-gray-500">Demo Accounts:</p>
-                <div class="text-xs space-y-2">
+                <p class="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Demo Accounts:</p>
+                <div class="text-xs space-y-2 text-gray-700 dark:text-gray-300">
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">Pastor/Elder:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: pastor@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: pastor123</div>
+                        <span class="font-medium">Pastor/Elder:</span>
+                        <div class="ml-2 mt-1">Email: pastor@church.com</div>
+                        <div class="ml-2">Password: pastor123</div>
                     </div>
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">Church Clerk:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: clerk@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: clerk123</div>
+                        <span class="font-medium">Church Clerk:</span>
+                        <div class="ml-2 mt-1">Email: clerk@church.com</div>
+                        <div class="ml-2">Password: clerk123</div>
                     </div>
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">SS Superintendent:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: superintendent@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: super123</div>
+                        <span class="font-medium">SS Superintendent:</span>
+                        <div class="ml-2 mt-1">Email: superintendent@church.com</div>
+                        <div class="ml-2">Password: super123</div>
                     </div>
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">SS Coordinator:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: coordinator1@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: coord123</div>
+                        <span class="font-medium">SS Coordinator:</span>
+                        <div class="ml-2 mt-1">Email: coordinator1@church.com</div>
+                        <div class="ml-2">Password: coord123</div>
                     </div>
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">Financial Secretary:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: financial@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: finance123</div>
+                        <span class="font-medium">Financial Secretary:</span>
+                        <div class="ml-2 mt-1">Email: financial@church.com</div>
+                        <div class="ml-2">Password: finance123</div>
                     </div>
                     <div>
-                        <span class="text-gray-600 dark:text-gray-400 font-medium">ICT Admin:</span>
-                        <div class="ml-2 mt-1 dark:text-gray-400">Email: ict@church.com</div>
-                        <div class="ml-2 dark:text-gray-400">Password: ict123</div>
+                        <span class="font-medium">ICT Admin:</span>
+                        <div class="ml-2 mt-1">Email: ict@church.com</div>
+                        <div class="ml-2">Password: ict123</div>
                     </div>
                 </div>
             </div>

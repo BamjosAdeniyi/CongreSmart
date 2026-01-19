@@ -62,7 +62,7 @@
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h2 class="text-lg font-semibold dark:text-gray-200">Recent Notifications</h2>
             </div>
-            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <div class="divide-y dark:divide-gray-700 divide-gray-200">
                 @forelse($notifications as $notification)
                     <div class="p-6 {{ !$notification->is_read ? 'bg-blue-50 dark:bg-blue-900/20' : '' }} hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <div class="flex items-start gap-4">

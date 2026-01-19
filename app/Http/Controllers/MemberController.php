@@ -38,7 +38,25 @@ class MemberController extends Controller
             $query->where('membership_status', $request->status);
         }
 
-        $members = $query->paginate(20);
+        // Sorting functionality
+        $sortColumn = $request->get('sort_by', 'first_name');
+        $sortDirection = $request->get('sort_order', 'asc');
+
+        $allowedSortColumns = [
+            'first_name',
+            'date_of_birth',
+            'membership_type',
+            'membership_category',
+            'baptism_status'
+        ];
+
+        if (in_array($sortColumn, $allowedSortColumns)) {
+            $query->orderBy($sortColumn, $sortDirection);
+        } else {
+            $query->orderBy('first_name', 'asc');
+        }
+
+        $members = $query->paginate(20)->withQueryString();
 
         return view('members.index', compact('members'));
     }

@@ -54,15 +54,33 @@
                     <table class="w-full">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[150px]">Name</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[80px]">Age</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[150px] hidden sm:table-cell">Contact</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden xl:table-cell">Membership Type</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Category</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden md:table-cell">Role</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Status</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[120px] hidden lg:table-cell">Baptismal Status</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider min-w-[100px]">Actions</th>
+                                @php
+                                    $sortableColumns = [
+                                        'first_name' => 'Name',
+                                        'date_of_birth' => 'Age',
+                                        'membership_type' => 'Membership Type',
+                                        'membership_category' => 'Category',
+                                        'baptism_status' => 'Baptismal Status',
+                                    ];
+                                @endphp
+                                @foreach($sortableColumns as $column => $label)
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <a href="{{ route('members.index', array_merge(request()->query(), ['sort_by' => $column, 'sort_order' => request('sort_by') == $column && request('sort_order') == 'asc' ? 'desc' : 'asc'])) }}" class="flex items-center gap-1">
+                                            {{ $label }}
+                                            @if(request('sort_by') == $column)
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    @if(request('sort_order', 'asc') == 'asc')
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                                    @else
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7" />
+                                                    @endif
+                                                </svg>
+                                            @endif
+                                        </a>
+                                    </th>
+                                @endforeach
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -77,48 +95,39 @@
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                         {{ $member->age ?? 'N/A' }}
                                     </td>
-                                    <td class="px-4 py-4 whitespace-nowrap hidden sm:table-cell">
-                                        <div>
-                                            <p class="text-sm text-gray-900 dark:text-gray-200">{{ $member->phone ?? 'N/A' }}</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]">{{ $member->email ?? 'N/A' }}</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-4 whitespace-nowrap hidden xl:table-cell">
+                                    <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_type ?? 'community') === 'community') bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300
-                                            @else bg-teal-100 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300 @endif">
+                                            @if(($member->membership_type ?? 'community') === 'community') bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300
+                                            @else bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300 @endif">
                                             {{ ucfirst($member->membership_type ?? 'community') }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_category ?? 'adult') === 'adult') bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300
-                                            @elseif(($member->membership_category ?? 'adult') === 'youth') bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300
-                                            @elseif(($member->membership_category ?? 'adult') === 'child') bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-300
-                                            @else bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 @endif">
+                                            @if(($member->membership_category ?? 'adult') === 'adult') bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200
+                                            @elseif(($member->membership_category ?? 'adult') === 'youth') bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300
+                                            @elseif(($member->membership_category ?? 'adult') === 'child') bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300
+                                            @else bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 @endif">
                                             {{ $member->membership_category === 'university-student' ? 'student' : ucfirst($member->membership_category ?? 'adult') }}
                                         </span>
                                     </td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 hidden md:table-cell">
-                                        {{ $member->role_in_church ?? 'Member' }}
-                                    </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->membership_status ?? 'active') === 'active') bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
-                                            @elseif(($member->membership_status ?? 'active') === 'inactive') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
-                                            @elseif(($member->membership_status ?? 'active') === 'transferred') bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300
-                                            @else bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 @endif">
-                                            {{ ucfirst($member->membership_status ?? 'active') }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-4 whitespace-nowrap hidden lg:table-cell">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if(($member->baptism_status ?? 'not-baptized') === 'baptized') bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300
-                                            @elseif(($member->baptism_status ?? 'not-baptized') === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300
-                                            @else bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300 @endif">
+                                            @if(($member->baptism_status ?? 'not-baptized') === 'baptized') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300
+                                            @elseif(($member->baptism_status ?? 'not-baptized') === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300
+                                            @else bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300 @endif">
                                             @if(($member->baptism_status ?? 'not-baptized') === 'baptized') Baptized
                                             @elseif(($member->baptism_status ?? 'not-baptized') === 'not-baptized') Not Baptized
                                             @else Pending @endif
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                            @if(($member->membership_status ?? 'active') === 'active') bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300
+                                            @elseif(($member->membership_status ?? 'active') === 'inactive') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
+                                            @elseif(($member->membership_status ?? 'active') === 'transferred') bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300
+                                            @else bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 @endif">
+                                            {{ ucfirst($member->membership_status ?? 'active') }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -164,10 +173,8 @@
                     </table>
                 </div>
 
-                <div class="mt-4 flex justify-between items-center">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                        Showing {{ $members ? $members->count() : 0 }} members
-                    </p>
+                <div class="mt-4">
+                    {{ $members->links() }}
                 </div>
             </div>
         </div>
