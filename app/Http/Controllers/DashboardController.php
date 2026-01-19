@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    private function getUpcomingBirthdays()
+    {
+        $today = Carbon::today();
+        $end   = $today->copy()->addDays(7);
+
+        // Works across year boundary by comparing month/day
+        return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
+            $today->format('m-d'),
+            $end->format('m-d')
+        ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+    }
+
     public function pastor(Request $request)
     {
         // Cache keys and short TTL
@@ -80,14 +92,7 @@ SQL;
 
         // 2) Upcoming birthdays (next 7 days)
         $upcomingBirthdays = Cache::remember('dashboard.alerts.upcoming_birthdays', 30, function () {
-            $today = Carbon::today();
-            $end   = $today->copy()->addDays(7);
-
-            // Works across year boundary by comparing month/day
-            return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
-                $today->format('m-d'),
-                $end->format('m-d')
-            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+            return $this->getUpcomingBirthdays();
         });
 
         $alerts = [
@@ -219,13 +224,7 @@ SQL;
 
         // Upcoming birthdays (next 7 days)
         $upcomingBirthdays = Cache::remember('dashboard.superintendent.upcoming_birthdays', 30, function () {
-            $today = Carbon::today();
-            $end   = $today->copy()->addDays(7);
-
-            return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
-                $today->format('m-d'),
-                $end->format('m-d')
-            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+            return $this->getUpcomingBirthdays();
         });
 
         return view('dashboards.superintendent', compact(
@@ -322,13 +321,7 @@ SQL;
 
         // Upcoming birthdays (next 7 days)
         $upcomingBirthdays = Cache::remember('dashboard.welfare.upcoming_birthdays', 30, function () {
-            $today = Carbon::today();
-            $end   = $today->copy()->addDays(7);
-
-            return Member::whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') BETWEEN ? AND ?", [
-                $today->format('m-d'),
-                $end->format('m-d')
-            ])->get(['member_id', 'first_name', 'last_name', 'date_of_birth', 'photo']);
+            return $this->getUpcomingBirthdays();
         });
 
         // Define placeholder variables

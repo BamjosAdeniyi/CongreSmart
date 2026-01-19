@@ -8,4 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+// Register the birthday check command to run daily
 Schedule::command('members:check-birthdays')->dailyAt('08:00');

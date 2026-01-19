@@ -53,4 +53,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(AttendanceRecord::class, 'marked_by', 'id');
     }
+
+    public function readNotifications()
+    {
+        return $this->belongsToMany(SystemNotification::class, 'notification_reads', 'user_id', 'notification_id')
+                    ->withPivot('read_at');
+    }
 }

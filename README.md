@@ -1028,4 +1028,3 @@ If you discover a security vulnerability:
 - **PHP**: 8.5+
 - **MySQL**: 8.0+
 - **RAM**: 4GB
-- **
